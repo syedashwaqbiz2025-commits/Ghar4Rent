@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .help-icon {
+            <a href="index.html"><img src="logo.jpg" alt="Ghar4Rent Logo" class="logo"></a>
+            margin-left: 6px;
+            color: var(--brand-blue);
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .tooltip {
+            position: absolute;
+            background: #fff;
+            color: var(--brand-blue);
+            border: 1px solid var(--brand-blue);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.98em;
+            box-shadow: 0 2px 12px rgba(37,99,235,0.10);
+            z-index: 99999;
+            display: none;
+        }
+        .photo-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* ...existing CSS... */
+    </style>
+</head>
+<body>
+    <!-- ...existing HTML content... -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Next: Photos button logic
+        var nextToPhotosBtn = document.getElementById('nextToPhotos');
+        if (nextToPhotosBtn) {
+            nextToPhotosBtn.onclick = function() {
+                document.getElementById('wizardStep2').style.display = 'none';
+                document.getElementById('wizardStep3').style.display = 'block';
+                setWizardStep && setWizardStep(3);
+            };
+        }
+    });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <style>
+        .help-icon {
+            display: inline-block;
+            margin-left: 6px;
+            color: var(--brand-blue);
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .tooltip {
+            position: absolute;
+            background: #fff;
+            color: var(--brand-blue);
+            border: 1px solid var(--brand-blue);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.98em;
+            box-shadow: 0 2px 12px rgba(37,99,235,0.10);
+            z-index: 99999;
+            display: none;
+        }
+        .photo-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .photo-modal-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 24px rgba(37,99,235,0.18);
+            text-align: center;
+        }
+        .photo-modal-content img {
+            max-width: 80vw;
+            max-height: 60vh;
+            border-radius: 10px;
+        }
+        .photo-modal-close {
+            margin-top: 12px;
+            background: var(--brand-blue);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .photo-thumb {
+            cursor: grab;
+            transition: box-shadow 0.2s;
+        }
+        .photo-thumb.dragging {
+            box-shadow: 0 4px 16px rgba(37,99,235,0.18);
+            opacity: 0.7;
+        }
+        .wizard-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            padding: 0 4px;
+        }
+        .wizard-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            font-size: 0.98em;
+            color: var(--brand-blue);
+            font-weight: 500;
+        }
+        .wizard-step.active {
+            color: #fff;
+            background: var(--brand-blue);
+            border-radius: 16px;
+            padding: 6px 0;
+            box-shadow: 0 1px 6px rgba(37,99,235,0.10);
+        }
+        .wizard-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 3px;
+            background: var(--brand-blue);
+            border-radius: 2px;
+            opacity: 0.3;
+        }
+        .preview-card {
+            background: #f7faff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(37,99,235,0.08);
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+        .preview-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .preview-section {
+            margin-bottom: 10px;
+        }
+        .preview-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .preview-amenity {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.98em;
+        }
+        .preview-photos {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .preview-photos img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+        }
+        .preview-map {
+            margin-top: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .map-search-box {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 8px;
+        }
+        .success-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .success-content {
+            background: #f7faff;
+            padding: 32px 24px;
+            border-radius: 14px;
+            box-shadow: 0 2px 24px rgba(37,99,235,0.12);
+            text-align: center;
+            max-width: 340px;
+        }
+        .share-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 18px;
+        }
+        .share-btns a {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 6px;
+            background: var(--brand-blue);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+        }
+        @media (max-width: 600px) {
+            .post-form {
+                max-width: 98vw;
+                padding: 12px;
+                box-shadow: none;
+            }
+            .post-form h2 {
+                font-size: 1.2em;
+            }
+            .post-form label {
+                font-size: 1em;
+            }
+            .post-form input, .post-form select {
+                font-size: 1em;
+                padding: 10px;
+            }
+            .photo-drop {
+                padding: 12px;
+                font-size: 1em;
+            }
+            .photo-preview-list {
+                gap: 4px;
+            }
+            .photo-thumb {
+                width: 44px;
+                height: 44px;
+            }
+            .amenities-list {
+                gap: 8px;
+            }
+        }
+        .amenities-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin: 18px 0 0 0;
+            background: #f7faff;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 8px rgba(37,99,235,0.06);
+        }
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1em;
+            padding: 6px 0;
+            font-weight: 500;
+        }
+        .error-msg {
+            color: #d32f2f;
+            font-size: 0.95em;
+            margin-top: 2px;
+        }
+        .input-error {
+            border-color: #d32f2f !important;
+            background: #fff0f0;
+        }
+        .photo-drop {
+            border: 2px dashed var(--brand-blue);
+            border-radius: 8px;
+            padding: 18px;
+            color: #b71c1c;
+            background: #fff3f3;
+            border-radius: 4px;
+            padding: 2px 6px;
+            color: var(--brand-blue);
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        .photo-preview-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .photo-thumb {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+        .photo-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+            #mapPreview { height: 240px !important; background: #eee; margin: 10px 0; border-radius: 6px; }
+        </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Your Property - Ghar4Rent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+            .logo {
+                width: 60px;
+                height: 60px;
+                margin-right: 10px;
+                vertical-align: middle;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #eee;
+            }
+        .post-form { max-width: 420px; margin: 32px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .post-form h2 { margin-bottom: 18px; }
+        .post-form label { display: block; margin-top: 12px; font-weight: 500; }
+        .post-form input, .post-form select { width: 100%; padding: 8px; margin-top: 4px; border-radius: 4px; border: 1px solid #ccc; }
+    .post-form button { margin-top: 18px; background: var(--brand-blue); color: #fff; border: none; padding: 10px 24px; border-radius: 4px; cursor: pointer; font-size: 1em; }
+        .post-form .charge-info { margin-top: 10px; color: #d32f2f; font-weight: bold; }
+        .otp-section { margin-top: 16px; }
+    </style>
+</head>
+<body>
+    <div id="toast" style="position:fixed;bottom:32px;right:32px;z-index:99999;min-width:180px;max-width:320px;background:var(--brand-blue);color:#fff;padding:14px 22px;border-radius:8px;box-shadow:0 2px 12px rgba(var(--brand-blue-rgb),0.18);font-weight:500;display:none;transition:opacity 0.3s;"></div>
+    <!-- Login Modal -->
+    <div id="loginModal" class="photo-modal" style="display:none;z-index:10000;">
+        <div class="photo-modal-content" style="max-width:340px;">
+            <h3 style="margin-bottom:10px;">Login</h3>
+            <form id="loginForm" autocomplete="off">
+                <input type="tel" id="loginMobile" name="loginMobile" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" required style="margin-bottom:8px;width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;" aria-label="Mobile Number" autocomplete="tel">
+                <input type="password" id="loginPassword" name="loginPassword" placeholder="Password" required style="margin-bottom:8px;width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;">
+                <button type="submit" style="width:100%;background:var(--brand-blue);color:#fff;">Login</button>
+            </form>
+            <div id="loginMsg" style="color:#b71c1c;margin-top:8px;"></div>
+            <button class="photo-modal-close" onclick="document.getElementById('loginModal').style.display='none'" style="margin-top:12px;">Close</button>
+        </div>
+    </div>
+    <!-- Register Modal -->
+    <div id="registerModal" class="photo-modal" style="display:none;z-index:10000;">
+        <div class="photo-modal-content" style="max-width:340px;">
+            <h3 style="margin-bottom:10px;">Register</h3>
+            <form id="registerForm" autocomplete="off">
+                <input type="text" id="registerUsername" name="registerUsername" placeholder="Username" required style="margin-bottom:8px;width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;">
+                <input type="tel" id="registerMobile" name="registerMobile" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" required style="margin-bottom:8px;width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;" aria-label="Mobile Number" autocomplete="tel">
+                <input type="password" id="registerPassword" name="registerPassword" placeholder="Password" required style="margin-bottom:8px;width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;">
+                <button type="submit" style="width:100%;background:#388e3c;color:#fff;">Register</button>
+            </form>
+            <div id="registerMsg" style="color:#b71c1c;margin-top:8px;"></div>
+            <button class="photo-modal-close" onclick="document.getElementById('registerModal').style.display='none'" style="margin-top:12px;">Close</button>
+        </div>
+    </div>
+    <div id="photoModal" class="photo-modal" style="display:none;">
+        <div class="photo-modal-content">
+            <img id="photoModalImg" src="" alt="Preview">
+            <br>
+            <button class="photo-modal-close" onclick="document.getElementById('photoModal').style.display='none'">Close</button>
+            aria-label="Close Photo Preview"
+        </div>
+    </div>
+    <div id="successModal" class="success-modal" style="display:none;">
+        <div class="success-content">
+            <h3 style="color:var(--brand-blue);margin-bottom:10px;"><i class="fa-solid fa-circle-check"></i> Property Posted!</h3>
+            <p style="margin-bottom:10px;">Your property is now live.<br><span style="color:var(--brand-blue);font-weight:500;">Share your listing:</span></p>
+            <div class="share-btns">
+                <a href="#" id="shareWhatsapp" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                <a href="#" id="shareFacebook" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                <a href="#" id="shareTwitter" target="_blank"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
+            </div>
+            <button id="copyDetailsBtn" style="margin-top:14px;background:#eee;color:var(--brand-blue);border:1px solid var(--brand-blue);">Copy Details</button>
+            aria-label="Copy Details"
+            <div id="copyMsg" style="color:#388e3c;font-size:0.98em;margin-top:6px;"></div>
+            <div style="margin-top:18px;">
+                <a href="#" id="viewPropertyLink" style="color:var(--brand-blue);text-decoration:underline;font-weight:500;">View Your Property</a>
+            </div>
+            <button onclick="document.getElementById('successModal').style.display='none'" style="margin-top:16px;">Close</button>
+            aria-label="Close Success Modal"
+        </div>
+    </div>
+    <header>
+        <a href="index.html"><img src="logo.jpg" alt="Ghar4Rent Logo" class="logo"></a>
+    <span id="userInfo" style="float:right;margin:10px 16px 0 0;color:var(--brand-blue);font-weight:500;"></span>
+    <button id="logoutBtn" style="float:right;margin:10px 0 0 0;background:#b71c1c;color:#fff;padding:6px 18px;border-radius:6px;border:none;cursor:pointer;font-weight:500;display:none;">Logout</button>
+    <div style="float:right; margin:10px 0 0 0; display:flex; gap:10px;">
+    <!-- Login button removed, now handled via login.html -->
+    </div>
+        <nav>
+            <a href="index.html"><i class="fa-solid fa-house-user"></i> Home</a>
+            <a href="buy.html"><i class="fa-solid fa-cart-shopping"></i> Buy</a>
+            <a href="rent.html"><i class="fa-solid fa-house-user"></i> Rent</a>
+            <a href="commercial.html"><i class="fa-solid fa-building"></i> Commercial</a>
+            <a href="post-property.html"><i class="fa-solid fa-plus"></i> Post Property</a>
+        </nav>
+    </header>
+    <section>
+    <div id="welcomeScreen" style="max-width:420px;margin:32px auto 0 auto;display:block;text-align:center;">
+    <h2 style="margin-bottom:18px;color:var(--brand-blue);">Welcome to Ghar4Rent</h2>
+        <p style="margin-bottom:18px;">Are you an existing user or new user?</p>
+    <button id="welcomeLoginBtn" style="background:var(--brand-blue);color:#fff;padding:10px 32px;border-radius:6px;border:none;cursor:pointer;font-size:1.1em;margin-right:12px;">Existing User (Login)</button>
+        <button id="welcomeRegisterBtn" style="background:#388e3c;color:#fff;padding:10px 32px;border-radius:6px;border:none;cursor:pointer;font-size:1.1em;">New User (Register)</button>
+    </div>
+    <div id="userDashboard" style="max-width:420px;margin:32px auto 0 auto;display:none;">
+        <h3 style="margin-bottom:12px;">My Posted Properties</h3>
+        <div id="dashboardList"></div>
+    </div>
+    <form class="post-form" id="propertyPostForm" autocomplete="off" style="display:none;">
+            <div style="text-align:right;margin-bottom:8px;">
+                <label for="langSelect" style="font-weight:500;margin-right:6px;">Language:</label>
+                <select id="langSelect" style="padding:4px 8px;border-radius:4px;">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="ur">اردو</option>
+                </select>
+            </div>
+            <div class="wizard-progress" id="wizardProgress">
+                <div class="wizard-step" id="stepIndicator1">Mobile</div>
+                <div class="wizard-step" id="stepIndicator2">Details</div>
+                <div class="wizard-step" id="stepIndicator3">Photos</div>
+                <div class="wizard-step" id="stepIndicator4">Location</div>
+                <div class="wizard-step" id="stepIndicator5">Preview</div>
+            </div>
+            <h2>Post Your Property Free*</h2>
+            <div id="formErrors" style="color:#d32f2f;margin-bottom:8px;"></div>
+            <div id="wizardStep1">
+                <label for="mobile">Step 1: Mobile Number</label>
+                <input type="tel" id="mobile" name="mobile" pattern="[0-9]{10}" maxlength="10" required placeholder="Enter your 10-digit mobile number" aria-label="Mobile Number" autocomplete="tel">
+                <div class="error-msg" id="errMobile"></div>
+                <button type="button" id="sendOtpBtn">Send OTP</button>
+                <div class="otp-section" id="otpSection" style="display:none;">
+                    <label for="otp">Enter OTP</label>
+                    <input type="text" id="otp" name="otp" maxlength="6" required placeholder="Enter OTP" aria-label="OTP" autocomplete="one-time-code">
+                    <div class="error-msg" id="errOtp"></div>
+                    <button type="button" id="verifyOtpBtn">Verify OTP</button>
+                </div>
+            </div>
+            <div id="wizardStep2" style="display:none;">
+                <label for="saleRent" style="margin-top:0;">Step 2: For Sale or For Rent?</label>
+                <span class="help-icon" data-tooltip="Choose whether you want to sell or rent your property."><i class="fa-solid fa-circle-question"></i></span>
+                <select id="saleRent" name="saleRent" required>
+                    <option value="">Select Option</option>
+                    <option value="sale">FOR SALE</option>
+                    <option value="rent">FOR RENT</option>
+                </select>
+                <div class="error-msg" id="errSaleRent"></div>
+                <label for="type">Type of Property</label>
+                <span class="help-icon" data-tooltip="Select the type that best describes your property."><i class="fa-solid fa-circle-question"></i></span>
+                <select id="type" name="type" required>
+                    <option value="">Select Type</option>
+                </select>
+                <div class="error-msg" id="errType"></div>
+                <label for="title">Property Title</label>
+                <input type="text" id="title" name="title" required placeholder="Property Title" aria-label="Property Title">
+                <div class="error-msg" id="errTitle"></div>
+                <label for="location">Location</label>
+                <span class="help-icon" data-tooltip="Enter the locality, area, or address."><i class="fa-solid fa-circle-question"></i></span>
+                <input type="text" id="location" name="location" required placeholder="Location" aria-label="Location">
+                <div class="error-msg" id="errLocation"></div>
+                <label for="price">Price (Rs)</label>
+                <span class="help-icon" data-tooltip="Enter the expected price in rupees."><i class="fa-solid fa-circle-question"></i></span>
+                <input type="number" id="price" name="price" required placeholder="Price (Rs)" aria-label="Price">
+                <div class="error-msg" id="errPrice"></div>
+                <label for="details">Details</label>
+                <input type="text" id="details" name="details" required placeholder="Details" aria-label="Details">
+                <div class="error-msg" id="errDetails"></div>
+                <label style="margin-top:18px;">Amenities & Features</label>
+                <span class="help-icon" data-tooltip="Tick all amenities available for your property."><i class="fa-solid fa-circle-question"></i></span>
+                <div class="amenities-list">
+                    <label class="amenity-item"><input type="checkbox" name="amenities" value="Parking"><i class="fa-solid fa-car"></i> Parking</label>
+                    <label class="amenity-item"><input type="checkbox" name="amenities" value="Lift"><i class="fa-solid fa-elevator"></i> Lift</label>
+                    <label class="amenity-item"><input type="checkbox" name="amenities" value="Gym"><i class="fa-solid fa-dumbbell"></i> Gym</label>
+                    <label class="amenity-item"><input type="checkbox" name="amenities" value="Security"><i class="fa-solid fa-shield"></i> Security</label>
+                    <label class="amenity-item"><input type="checkbox" name="amenities" value="Power Backup"><i class="fa-solid fa-bolt"></i> Power Backup</label>
+                    <label class="amenity-item"><input type="checkbox" name="amenities" value="Swimming Pool"><i class="fa-solid fa-person-swimming"></i> Swimming Pool</label>
+                    <label class="amenity-item"><input type="checkbox" name="amenities" value="Garden"><i class="fa-solid fa-leaf"></i> Garden</label>
+                    <label class="amenity-item"><input type="checkbox" name="amenities" value="Children Play Area"><i class="fa-solid fa-child"></i> Children Play Area</label>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:18px;">
+                    <button type="button" id="nextToPhotos" aria-label="Next: Photos">Next: Photos</button>
+                    <button type="button" id="saveDraftBtn" style="background:#eee;color:var(--brand-blue);border:1px solid var(--brand-blue);" aria-label="Save as Draft">Save as Draft</button>
+                </div>
+            </div>
+            <div id="wizardStep3" style="display:none;">
+                <label>Step 3: Upload Photos</label>
+                <div class="photo-drop" id="photoDrop" aria-label="Upload Photos">Drag & drop images here or click to select (max 6)</div>
+                <span class="help-icon" data-tooltip="You can drag and drop to reorder photos."><i class="fa-solid fa-circle-question"></i></span>
+                <input type="file" id="photos" name="photos" accept="image/*" multiple style="display:none;" aria-label="Upload Photos">
+                <div class="photo-preview-list" id="photoPreview"></div>
+                <div id="photoOrderMsg" style="color:var(--brand-blue);font-size:0.95em;margin-bottom:8px;"></div>
+                <button type="button" id="nextToLocation" aria-label="Next: Location">Next: Location</button>
+            </div>
+            <div id="wizardStep4" style="display:none;">
+                <label>Step 4: Select Location on Map</label>
+                <input type="text" id="mapSearch" class="map-search-box" placeholder="Search address or area..." aria-label="Search address or area">
+                <input type="text" id="mapLocation" name="mapLocation" placeholder="Selected coordinates/address" readonly aria-label="Selected coordinates or address">
+                <div id="mapPreview">Loading map...</div>
+                <button type="button" id="nextToPreview" aria-label="Next: Preview">Next: Preview</button>
+            </div>
+            <div id="wizardStep5" style="display:none;">
+                <label>Step 5: Preview & Submit</label>
+                <div id="propertyPreview" style="margin-bottom:12px;"></div>
+                <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+                    <button type="button" id="editDetailsBtn" aria-label="Edit Details">Edit Details</button>
+                    <button type="button" id="editPhotosBtn" aria-label="Edit Photos">Edit Photos</button>
+                    <button type="button" id="editLocationBtn" aria-label="Edit Location">Edit Location</button>
+                </div>
+                <div class="charge-info" id="chargeInfo"></div>
+                <button type="submit" id="submitBtn" aria-label="Post Property">Post Property</button>
+            </div>
+        </form>
+    <!-- FAQ section removed to keep it exclusive to index.html -->
+    </section>
+    <script>
+    // Welcome screen buttons now navigate to login/register pages
+    // Welcome screen logic
+    function showWelcomeScreen() {
+        document.getElementById('welcomeScreen').style.display = 'block';
+        document.getElementById('propertyPostForm').style.display = 'none';
+        document.getElementById('userDashboard').style.display = 'none';
+    }
+    function hideWelcomeScreen() {
+        document.getElementById('welcomeScreen').style.display = 'none';
+        document.getElementById('propertyPostForm').style.display = '';
+    }
+    document.getElementById('welcomeLoginBtn').onclick = function() {
+        window.location.href = 'login.html';
+    };
+    document.getElementById('welcomeRegisterBtn').onclick = function() {
+        window.location.href = 'register.html';
+    };
+    // Tooltip logic
+    document.querySelectorAll('.help-icon').forEach(icon => {
+        icon.addEventListener('mouseenter', function(e) {
+            let tip = document.createElement('div');
+            tip.className = 'tooltip';
+            tip.textContent = icon.getAttribute('data-tooltip');
+            document.body.appendChild(tip);
+            const rect = icon.getBoundingClientRect();
+            tip.style.position = 'absolute';
+            tip.style.left = (window.scrollX + rect.right + 8) + 'px';
+            tip.style.top = (window.scrollY + rect.top - 4) + 'px';
+            tip.style.zIndex = 9999;
+            tip.style.display = 'block';
+            icon._tip = tip;
+        });
+        icon.addEventListener('mouseleave', function(e) {
+            if (icon._tip) {
+                icon._tip.remove();
+                icon._tip = null;
+            }
+        });
+    });
+    // Toast notification system
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        toast.style.opacity = '1';
+        setTimeout(()=>{
+            toast.style.opacity = '0';
+            setTimeout(()=>{toast.style.display='none';},400);
+        }, 2200);
+    }
+    // Restrict posting to logged-in users
+    function checkLogin() {
+        const user = localStorage.getItem('currentUser');
+        if (!user) {
+            showWelcomeScreen();
+            var loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) loginBtn.style.display = '';
+        } else {
+            hideWelcomeScreen();
+            document.getElementById('userDashboard').style.display = '';
+            var loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) loginBtn.style.display = 'none';
+            showDashboard(user);
+        }
+    }
+    function showDashboard(user) {
+        let postedProperties = JSON.parse(localStorage.getItem('postedProperties') || '{}');
+        let props = postedProperties[user] || [];
+        const list = document.getElementById('dashboardList');
+        let users = JSON.parse(localStorage.getItem('users') || '{}');
+        let userInfo = users[user] ? users[user].username : user;
+        document.getElementById('userInfo').textContent = `Welcome, ${userInfo}`;
+        document.getElementById('logoutBtn').style.display = '';
+        if (!props.length) {
+            list.innerHTML = '<div style="color:#888;">No properties posted yet.</div>';
+            return;
+        }
+        list.innerHTML = '';
+        props.forEach((prop, idx) => {
+            let html = `<div style='background:#f7faff;border-radius:8px;padding:12px;margin-bottom:10px;'>`;
+            html += `<strong>${prop.title}</strong> <span style='color:var(--brand-blue);'>(${prop.saleRent === 'sale' ? 'Sale' : 'Rent'})</span><br>`;
+            html += `<span>${prop.location}</span> | <span>₹${prop.price}</span><br>`;
+            if (prop.photos && prop.photos.length) {
+                html += `<div style='display:flex;gap:6px;margin:6px 0;'>`;
+                prop.photos.forEach(photo => {
+                    html += `<img src='assets/${photo}' style='width:40px;height:40px;border-radius:6px;object-fit:cover;'>`;
+                });
+                html += `</div>`;
+            }
+            let now = Date.now();
+            let posted = new Date(prop.postedOn).toLocaleDateString();
+            let expires = new Date(prop.expiresOn).toLocaleDateString();
+            let expired = now > prop.expiresOn;
+            html += `<div style='margin:4px 0;color:${expired?'#b71c1c':'#388e3c'};'>Status: ${expired?'Expired':'Active'} | Posted: ${posted} | Expires: ${expires}</div>`;
+            html += `<button onclick='editProperty(${idx})' style='margin:6px 8px 0 0;background:var(--brand-blue);color:#fff;padding:4px 12px;border-radius:4px;border:none;'>Edit</button>`;
+            html += `<button onclick='deleteProperty(${idx})' style='margin:6px 8px 0 0;background:#b71c1c;color:#fff;padding:4px 12px;border-radius:4px;border:none;'>Delete</button>`;
+            if (expired) {
+                html += `<button onclick='renewProperty(${idx})' style='margin:6px 0 0 0;background:#388e3c;color:#fff;padding:4px 12px;border-radius:4px;border:none;'>Renew</button>`;
+            }
+            html += `</div>`;
+            list.innerHTML += html;
+        });
+    }
+    window.renewProperty = function(idx) {
+        const user = localStorage.getItem('currentUser');
+        let postedProperties = JSON.parse(localStorage.getItem('postedProperties') || '{}');
+        let prop = postedProperties[user][idx];
+        prop.expiresOn = Date.now() + 90*24*60*60*1000;
+        postedProperties[user][idx] = prop;
+        localStorage.setItem('postedProperties', JSON.stringify(postedProperties));
+        showDashboard(user);
+    showToast('Property renewed for 90 days.');
+    }
+    document.getElementById('logoutBtn').onclick = function() {
+        localStorage.removeItem('currentUser');
+        document.getElementById('userInfo').textContent = '';
+        document.getElementById('logoutBtn').style.display = 'none';
+        checkLogin();
+    };
+    window.editProperty = function(idx) {
+        const user = localStorage.getItem('currentUser');
+        let postedProperties = JSON.parse(localStorage.getItem('postedProperties') || '{}');
+        let prop = postedProperties[user][idx];
+        // Load property data into form for editing
+        document.getElementById('title').value = prop.title || '';
+        document.getElementById('saleRent').value = prop.saleRent || '';
+        document.getElementById('type').value = prop.type || '';
+        document.getElementById('location').value = prop.location || '';
+        document.getElementById('price').value = prop.price || '';
+        document.getElementById('details').value = prop.details || '';
+        if (prop.amenities) {
+            Array.from(document.querySelectorAll('input[name="amenities"]')).forEach(cb => {
+                cb.checked = prop.amenities.includes(cb.value);
+            });
+        }
+        // Show step 2 for editing
+        document.getElementById('wizardStep1').style.display = 'none';
+        document.getElementById('wizardStep2').style.display = 'block';
+        setWizardStep(2);
+        showToast('Edit property details below.');
+    }
+    window.deleteProperty = function(idx) {
+        const user = localStorage.getItem('currentUser');
+        let postedProperties = JSON.parse(localStorage.getItem('postedProperties') || '{}');
+        postedProperties[user].splice(idx, 1);
+        localStorage.setItem('postedProperties', JSON.stringify(postedProperties));
+        showDashboard(user);
+    showToast('Property deleted.');
+    }
+    // Check login on page load and after login/register
+    checkLogin();
+    var userForm = document.getElementById('userForm');
+    if (userForm) {
+        userForm.onsubmit = function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const mobile = document.getElementById('usermobile').value.trim();
+            const password = document.getElementById('userpassword').value;
+            if (!username || !/^\d{10}$/.test(mobile) || !password) {
+                document.getElementById('userMsg').textContent = 'Please fill all fields with valid info.';
+                return;
+            }
+            let users = JSON.parse(localStorage.getItem('users') || '{}');
+            users[mobile] = { username, password };
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', mobile);
+            document.getElementById('userMsg').textContent = 'Login/Register successful!';
+            setTimeout(()=>{
+                document.getElementById('userModal').style.display = 'none';
+                document.getElementById('userMsg').textContent = '';
+                checkLogin();
+            }, 1200);
+        };
+    }
+    // User login/register logic
+    var loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.onclick = function() {
+            var userModal = document.getElementById('userModal');
+            if (userModal) userModal.style.display = 'flex';
+        };
+    }
+    var userForm = document.getElementById('userForm');
+    if (userForm) {
+        userForm.onsubmit = function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const mobile = document.getElementById('usermobile').value.trim();
+            const password = document.getElementById('userpassword').value;
+            if (!username || !/^\d{10}$/.test(mobile) || !password) {
+                document.getElementById('userMsg').textContent = 'Please fill all fields with valid info.';
+                return;
+            }
+            // Save user to localStorage (demo only)
+            let users = JSON.parse(localStorage.getItem('users') || '{}');
+            users[mobile] = { username, password };
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', mobile);
+            document.getElementById('userMsg').textContent = 'Login/Register successful!';
+            setTimeout(()=>{
+                var userModal = document.getElementById('userModal');
+                if (userModal) userModal.style.display = 'none';
+                document.getElementById('userMsg').textContent = '';
+            }, 1200);
+            // Optionally update UI to show logged-in user
+        };
+    }
+    // FAQ toggle logic
+    var faqQuestions = document.querySelectorAll('.faq-question');
+    if (faqQuestions.length) {
+        faqQuestions.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                if (answer && answer.style.display === 'block') {
+                    answer.style.display = 'none';
+                    this.setAttribute('aria-expanded', 'false');
+                } else if (answer) {
+                    answer.style.display = 'block';
+                    this.setAttribute('aria-expanded', 'true');
+                }
+            });
+        });
+    }
+    // Multi-language labels
+    const labels = {
+        en: {
+            mobile: 'Step 1: Mobile Number',
+            sendOtp: 'Send OTP',
+            enterOtp: 'Enter OTP',
+            verifyOtp: 'Verify OTP',
+            details: 'Step 2: Property Details',
+            saleRent: 'For Sale or For Rent?',
+            type: 'Type of Property',
+            title: 'Property Title',
+            location: 'Location',
+            price: 'Price (Rs)',
+            detailsField: 'Details',
+            amenities: 'Amenities & Features',
+            nextPhotos: 'Next: Photos',
+            saveDraft: 'Save as Draft',
+            nextLocation: 'Next: Location',
+            nextPreview: 'Next: Preview',
+            preview: 'Step 5: Preview & Submit',
+            submit: 'Post Property',
+            editDetails: 'Edit Details',
+            editPhotos: 'Edit Photos',
+            editLocation: 'Edit Location',
+            close: 'Close',
+            copyDetails: 'Copy Details',
+            viewProperty: 'View Your Property',
+            success: 'Property Posted!',
+            share: 'Share your listing:',
+            whatsapp: 'WhatsApp',
+            facebook: 'Facebook',
+            twitter: 'Twitter'
+        },
+        hi: {
+            mobile: 'चरण 1: मोबाइल नंबर',
+            sendOtp: 'OTP भेजें',
+            enterOtp: 'OTP दर्ज करें',
+            verifyOtp: 'OTP सत्यापित करें',
+            details: 'चरण 2: संपत्ति विवरण',
+            saleRent: 'बिक्री या किराए के लिए?',
+            type: 'संपत्ति का प्रकार',
+            title: 'संपत्ति शीर्षक',
+            location: 'स्थान',
+            price: 'मूल्य (रु)',
+            detailsField: 'विवरण',
+            amenities: 'सुविधाएँ और विशेषताएँ',
+            nextPhotos: 'अगला: फ़ोटो',
+            saveDraft: 'ड्राफ्ट सहेजें',
+            nextLocation: 'अगला: स्थान',
+            nextPreview: 'अगला: पूर्वावलोकन',
+            preview: 'चरण 5: पूर्वावलोकन और सबमिट',
+            submit: 'संपत्ति पोस्ट करें',
+            editDetails: 'विवरण संपादित करें',
+            editPhotos: 'फ़ोटो संपादित करें',
+            editLocation: 'स्थान संपादित करें',
+            close: 'बंद करें',
+            copyDetails: 'विवरण कॉपी करें',
+            viewProperty: 'अपनी संपत्ति देखें',
+            success: 'संपत्ति सफलतापूर्वक पोस्ट हुई!',
+            share: 'अपनी लिस्टिंग साझा करें:',
+            whatsapp: 'व्हाट्सएप',
+            facebook: 'फेसबुक',
+            twitter: 'ट्विटर'
+        },
+        te: {
+            mobile: 'దశ 1: మొబైల్ నంబర్',
+            sendOtp: 'OTP పంపండి',
+            enterOtp: 'OTP నమోదు చేయండి',
+            verifyOtp: 'OTP ధృవీకరించండి',
+            details: 'దశ 2: ఆస్తి వివరాలు',
+            saleRent: 'అమ్మకానికి లేదా అద్దెకు?',
+            type: 'ఆస్తి రకం',
+            title: 'ఆస్తి శీర్షిక',
+            location: 'స్థానం',
+            price: 'ధర (రూ)',
+            detailsField: 'వివరాలు',
+            amenities: 'సౌకర్యాలు & లక్షణాలు',
+            nextPhotos: 'తదుపరి: ఫోటోలు',
+            saveDraft: 'డ్రాఫ్ట్‌గా సేవ్ చేయండి',
+            nextLocation: 'తదుపరి: స్థానం',
+            nextPreview: 'తదుపరి: ప్రివ్యూ',
+            preview: 'దశ 5: ప్రివ్యూ & సమర్పించండి',
+            submit: 'ఆస్తిని పోస్ట్ చేయండి',
+            editDetails: 'వివరాలు సవరించండి',
+            editPhotos: 'ఫోటోలు సవరించండి',
+            editLocation: 'స్థానం సవరించండి',
+            close: 'మూసివేయండి',
+            copyDetails: 'వివరాలు కాపీ చేయండి',
+            viewProperty: 'మీ ఆస్తిని చూడండి',
+            success: 'ఆస్తి విజయవంతంగా పోస్ట్ చేయబడింది!',
+            share: 'మీ లిస్టింగ్‌ను షేర్ చేయండి:',
+            whatsapp: 'వాట్సాప్',
+            facebook: 'ఫేస్‌బుక్',
+            twitter: 'ట్విట్టర్'
+        },
+        ur: {
+            mobile: 'مرحلہ 1: موبائل نمبر',
+            sendOtp: 'OTP بھیجیں',
+            enterOtp: 'OTP درج کریں',
+            verifyOtp: 'OTP تصدیق کریں',
+            details: 'مرحلہ 2: پراپرٹی کی تفصیلات',
+            saleRent: 'برائے فروخت یا برائے کرایہ؟',
+            type: 'پراپرٹی کی قسم',
+            title: 'پراپرٹی کا عنوان',
+            location: 'مقام',
+            price: 'قیمت (روپے)',
+            detailsField: 'تفصیلات',
+            amenities: 'سہولیات اور خصوصیات',
+            nextPhotos: 'اگلا: تصاویر',
+            saveDraft: 'بطور مسودہ محفوظ کریں',
+            nextLocation: 'اگلا: مقام',
+            nextPreview: 'اگلا: پیش نظارہ',
+            preview: 'مرحلہ 5: پیش نظارہ اور جمع کریں',
+            submit: 'پراپرٹی پوسٹ کریں',
+            editDetails: 'تفصیلات میں ترمیم کریں',
+            editPhotos: 'تصاویر میں ترمیم کریں',
+            editLocation: 'مقام میں ترمیم کریں',
+            close: 'بند کریں',
+            copyDetails: 'تفصیلات کاپی کریں',
+            viewProperty: 'اپنی پراپرٹی دیکھیں',
+            success: 'پراپرٹی کامیابی سے پوسٹ ہوگئی!',
+            share: 'اپنی لسٹنگ شیئر کریں:',
+            whatsapp: 'واٹس ایپ',
+            facebook: 'فیس بک',
+            twitter: 'ٹوئٹر'
+        }
+    };
+    function setLanguage(lang) {
+    var el;
+    el = document.querySelector('label[for="mobile"]'); if (el) el.textContent = labels[lang].mobile;
+    el = document.getElementById('sendOtpBtn'); if (el) el.textContent = labels[lang].sendOtp;
+    el = document.querySelector('label[for="otp"]'); if (el) el.textContent = labels[lang].enterOtp;
+    el = document.getElementById('verifyOtpBtn'); if (el) el.textContent = labels[lang].verifyOtp;
+    el = document.querySelector('label[for="saleRent"]'); if (el) el.textContent = labels[lang].saleRent;
+    el = document.querySelector('label[for="type"]'); if (el) el.textContent = labels[lang].type;
+    el = document.querySelector('label[for="title"]'); if (el) el.textContent = labels[lang].title;
+    el = document.querySelector('label[for="location"]'); if (el) el.textContent = labels[lang].location;
+    el = document.querySelector('label[for="price"]'); if (el) el.textContent = labels[lang].price;
+    el = document.querySelector('label[for="details"]'); if (el) el.textContent = labels[lang].detailsField;
+    el = document.querySelector('label[style*="amenities"]'); if (el) el.textContent = labels[lang].amenities;
+    el = document.getElementById('nextToPhotos'); if (el) el.textContent = labels[lang].nextPhotos;
+    el = document.getElementById('saveDraftBtn'); if (el) el.textContent = labels[lang].saveDraft;
+    el = document.getElementById('nextToLocation'); if (el) el.textContent = labels[lang].nextLocation;
+    el = document.getElementById('nextToPreview'); if (el) el.textContent = labels[lang].nextPreview;
+    el = document.querySelector('#wizardStep5 > label'); if (el) el.textContent = labels[lang].preview;
+    el = document.getElementById('submitBtn'); if (el) el.textContent = labels[lang].submit;
+    el = document.getElementById('editDetailsBtn'); if (el) el.textContent = labels[lang].editDetails;
+    el = document.getElementById('editPhotosBtn'); if (el) el.textContent = labels[lang].editPhotos;
+    el = document.getElementById('editLocationBtn'); if (el) el.textContent = labels[lang].editLocation;
+    el = document.querySelector('.photo-modal-close'); if (el) el.textContent = labels[lang].close;
+    el = document.getElementById('copyDetailsBtn'); if (el) el.textContent = labels[lang].copyDetails;
+    el = document.getElementById('viewPropertyLink'); if (el) el.textContent = labels[lang].viewProperty;
+    el = document.querySelector('.success-content h3'); if (el) el.textContent = labels[lang].success;
+    el = document.querySelector('.success-content span'); if (el) el.textContent = labels[lang].share;
+    el = document.getElementById('shareWhatsapp'); if (el) el.textContent = labels[lang].whatsapp;
+    el = document.getElementById('shareFacebook'); if (el) el.textContent = labels[lang].facebook;
+    el = document.getElementById('shareTwitter'); if (el) el.textContent = labels[lang].twitter;
+    }
+    document.getElementById('langSelect').onchange = function() {
+        setLanguage(this.value);
+    };
+    setLanguage('en');
+    // Load draft if available
+    window.addEventListener('DOMContentLoaded', function() {
+        const draft = localStorage.getItem('propertyDraft');
+        if (draft) {
+            if (confirm('You have a saved draft. Load it?')) {
+                const data = JSON.parse(draft);
+                document.getElementById('title').value = data.title || '';
+                document.getElementById('saleRent').value = data.saleRent || '';
+                document.getElementById('type').value = data.type || '';
+                document.getElementById('location').value = data.location || '';
+                document.getElementById('price').value = data.price || '';
+                document.getElementById('details').value = data.details || '';
+                if (data.amenities) {
+                    Array.from(document.querySelectorAll('input[name="amenities"]')).forEach(cb => {
+                        cb.checked = data.amenities.includes(cb.value);
+                    });
+                }
+                // Show step 2
+                document.getElementById('wizardStep1').style.display = 'none';
+                document.getElementById('wizardStep2').style.display = 'block';
+                setWizardStep(2);
+            }
+        }
+    });
+
+    document.getElementById('saveDraftBtn').onclick = function() {
+        // Save current step 2 data as draft
+        const draftData = {
+            title: document.getElementById('title').value.trim(),
+            saleRent: document.getElementById('saleRent').value,
+            type: document.getElementById('type').value,
+            location: document.getElementById('location').value.trim(),
+            price: document.getElementById('price').value,
+            details: document.getElementById('details').value.trim(),
+            amenities: Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(e => e.value)
+        };
+        localStorage.setItem('propertyDraft', JSON.stringify(draftData));
+        alert('Draft saved! You can resume later.');
+    };
+    function setWizardStep(step) {
+        for (let i = 1; i <= 5; i++) {
+            document.getElementById('stepIndicator' + i).classList.remove('active');
+        }
+        document.getElementById('stepIndicator' + step).classList.add('active');
+    }
+    setWizardStep(1);
+    // Edit buttons in preview step
+    document.getElementById('editDetailsBtn').onclick = function() {
+        document.getElementById('wizardStep5').style.display = 'none';
+        document.getElementById('wizardStep2').style.display = 'block';
+    };
+    document.getElementById('editPhotosBtn').onclick = function() {
+        document.getElementById('wizardStep5').style.display = 'none';
+        document.getElementById('wizardStep3').style.display = 'block';
+    };
+    document.getElementById('editLocationBtn').onclick = function() {
+        document.getElementById('wizardStep5').style.display = 'none';
+        document.getElementById('wizardStep4').style.display = 'block';
+    };
+    function showError(id, msg) {
+        document.getElementById(id).textContent = msg;
+    }
+    function clearError(id) {
+        document.getElementById(id).textContent = '';
+    }
+    function setInputError(inputId, hasError) {
+        const el = document.getElementById(inputId);
+        if (hasError) el.classList.add('input-error');
+        else el.classList.remove('input-error');
+    }
+    // Load Leaflet JS
+    const leafletScript = document.createElement('script');
+    leafletScript.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    leafletScript.onload = function() {
+        let map, marker;
+        function initMap() {
+            map = L.map('mapPreview').setView([28.6139, 77.2090], 12); // Default to Delhi
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            map.on('click', function(e) {
+                setMarker(e.latlng.lat, e.latlng.lng);
+            });
+        }
+        function setMarker(lat, lng) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([lat, lng]).addTo(map);
+            document.getElementById('mapLocation').value = `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`;
+            propertyData.lat = lat;
+            propertyData.lng = lng;
+        }
+        // Address search using Nominatim API
+        document.getElementById('mapSearch').onkeydown = function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = this.value.trim();
+                if (!query) return;
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(results => {
+                        if (results && results.length) {
+                            const loc = results[0];
+                            map.setView([loc.lat, loc.lon], 16);
+                            setMarker(parseFloat(loc.lat), parseFloat(loc.lon));
+                            document.getElementById('mapLocation').value = loc.display_name;
+                            propertyData.address = loc.display_name;
+                        } else {
+                            alert('No results found. Try a different address.');
+                        }
+                    });
+            }
+        };
+        // Show map only when step 4 is visible
+        document.getElementById('nextToLocation').onclick = function() {
+            document.getElementById('wizardStep3').style.display = 'none';
+            document.getElementById('wizardStep4').style.display = 'block';
+            setTimeout(() => {
+                if (!map) initMap();
+                map.invalidateSize();
+            }, 200);
+        };
+    };
+    document.body.appendChild(leafletScript);
+    // Dynamic property type options
+    const typeOptions = {
+        sale: [
+            { value: 'apartment', label: 'Apartment' },
+            { value: 'independent', label: 'Independent House' },
+            { value: 'villa', label: 'Villa' },
+            { value: 'commercial', label: 'Commercial' }
+        ],
+        rent: [
+            { value: 'apartment', label: 'Apartment (Rent)' },
+            { value: 'independent', label: 'Independent House (Rent)' },
+            { value: 'villa', label: 'Villa (Rent)' },
+            { value: 'pg', label: 'PG/Hostel' },
+            { value: 'studio', label: 'Studio Apartment' },
+            { value: 'commercial', label: 'Commercial (Rent)' }
+        ]
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+        var saleRentSelect = document.getElementById('saleRent');
+        var typeSelect = document.getElementById('type');
+        if (saleRentSelect && typeSelect) {
+            saleRentSelect.onchange = function() {
+                const selected = this.value;
+                typeSelect.innerHTML = '<option value="">Select Type</option>';
+                if (typeOptions[selected]) {
+                    typeOptions[selected].forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt.value;
+                        option.textContent = opt.label;
+                        typeSelect.appendChild(option);
+                    });
+                }
+            };
+            // Populate type dropdown if saleRent already selected (e.g. after draft load)
+            if (saleRentSelect.value) {
+                saleRentSelect.onchange();
+                if (typeSelect.dataset.selected) {
+                    typeSelect.value = typeSelect.dataset.selected;
+                }
+            }
+        }
+    });
+    // Simulated backend for demo
+    let postedProperties = JSON.parse(localStorage.getItem('postedProperties') || '{}');
+    let currentMobile = '';
+    let otpSent = false;
+    let verified = false;
+    let otpCode = '';
+    let propertyData = {};
+    let photoFiles = [];
+    // Photo drag-and-drop & preview
+    const photoDrop = document.getElementById('photoDrop');
+    const photoInput = document.getElementById('photos');
+    const photoPreview = document.getElementById('photoPreview');
+    photoDrop.onclick = () => photoInput.click();
+    photoDrop.ondragover = e => { e.preventDefault(); photoDrop.style.background = '#e3f2fd'; };
+    photoDrop.ondragleave = e => { e.preventDefault(); photoDrop.style.background = ''; };
+    photoDrop.ondrop = e => {
+        e.preventDefault(); photoDrop.style.background = '';
+        handleFiles(e.dataTransfer.files);
+    };
+    photoInput.onchange = e => handleFiles(e.target.files);
+    function handleFiles(files) {
+        let arr = Array.from(files);
+        if (photoFiles.length + arr.length > 6) {
+            alert('Maximum 6 photos allowed.');
+            arr = arr.slice(0, 6 - photoFiles.length);
+        }
+        photoFiles = photoFiles.concat(arr);
+        renderPhotoPreview();
+        document.getElementById('photoOrderMsg').textContent = 'Drag and drop photos to reorder.';
+    }
+    function renderPhotoPreview() {
+        photoPreview.innerHTML = '';
+        photoFiles.forEach((file, idx) => {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const thumb = document.createElement('div');
+                thumb.className = 'photo-thumb';
+                thumb.draggable = true;
+                thumb.dataset.idx = idx;
+                const img = document.createElement('img');
+                img.src = ev.target.result;
+                img.onclick = function() {
+                    document.getElementById('photoModalImg').src = ev.target.result;
+                    document.getElementById('photoModal').style.display = 'flex';
+                };
+                thumb.appendChild(img);
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'photo-remove';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.onclick = function() {
+                    photoFiles.splice(idx, 1);
+                    renderPhotoPreview();
+                };
+                thumb.appendChild(removeBtn);
+                // Drag events
+                thumb.addEventListener('dragstart', function(e) {
+                    thumb.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', idx);
+                });
+                thumb.addEventListener('dragend', function() {
+                    thumb.classList.remove('dragging');
+                });
+                thumb.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+                thumb.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIdx = idx;
+                    if (fromIdx !== toIdx) {
+                        const moved = photoFiles.splice(fromIdx, 1)[0];
+                        photoFiles.splice(toIdx, 0, moved);
+                        renderPhotoPreview();
+                    }
+                });
+                photoPreview.appendChild(thumb);
+            };
+            reader.readAsDataURL(file);
+        });
+        document.getElementById('photoOrderMsg').textContent = photoFiles.length ? 'Drag and drop photos to reorder.' : '';
+    }
+
+    // Step 1: Mobile verification
+    var sendOtpBtn = document.getElementById('sendOtpBtn');
+    if (sendOtpBtn) {
+        sendOtpBtn.onclick = function() {
+            const mobile = document.getElementById('mobile').value;
+            if (!/^\d{10}$/.test(mobile)) {
+                showError('errMobile', 'Enter valid 10-digit mobile number');
+                setInputError('mobile', true);
+                return;
+            } else {
+                clearError('errMobile');
+                setInputError('mobile', false);
+            }
+            otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+            alert('OTP sent: ' + otpCode + ' (demo only)');
+            document.getElementById('otpSection').style.display = 'block';
+            currentMobile = mobile;
+            otpSent = true;
+        };
+        var verifyOtpBtn = document.getElementById('verifyOtpBtn');
+        if (verifyOtpBtn) {
+            verifyOtpBtn.onclick = function() {
+                var enteredOtp = document.getElementById('otp').value;
+                if (enteredOtp === otpCode) {
+                    alert('OTP verified!');
+                    document.getElementById('otpSection').style.display = 'none';
+                    document.getElementById('wizardStep1').style.display = 'none';
+                    document.getElementById('wizardStep2').style.display = 'block';
+                    setWizardStep && setWizardStep(2);
+                } else {
+                    showError('errMobile', 'Invalid OTP. Please try again.');
+                }
+            };
+        }
+    }
+    var loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.onclick = function() {
+            var loginModal = document.getElementById('loginModal');
+            if (loginModal) loginModal.style.display = 'flex';
+        };
+    }
+    var registerBtn = document.getElementById('registerBtn');
+    if (registerBtn) {
+        registerBtn.onclick = function() {
+            var registerModal = document.getElementById('registerModal');
+            if (registerModal) registerModal.style.display = 'flex';
+        };
+    }
+    document.getElementById('loginForm').onsubmit = function(e) {
+        e.preventDefault();
+        const mobile = document.getElementById('loginMobile').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        let users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (!users[mobile] || users[mobile].password !== password) {
+            document.getElementById('loginMsg').textContent = 'Invalid mobile or password.';
+            return;
+        }
+        localStorage.setItem('currentUser', mobile);
+        document.getElementById('loginMsg').textContent = 'Login successful!';
+        setTimeout(()=>{
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('loginMsg').textContent = '';
+            checkLogin();
+        }, 1200);
+    };
+    document.getElementById('registerForm').onsubmit = function(e) {
+        e.preventDefault();
+        const username = document.getElementById('registerUsername').value.trim();
+        const mobile = document.getElementById('registerMobile').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        if (!username || !/^\d{10}$/.test(mobile) || !password) {
+            document.getElementById('registerMsg').textContent = 'Please fill all fields with valid info.';
+            return;
+        }
+        let users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (users[mobile]) {
+            document.getElementById('registerMsg').textContent = 'Mobile already registered.';
+            return;
+        }
+        users[mobile] = { username, password };
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', mobile);
+        document.getElementById('registerMsg').textContent = 'Registration successful!';
+        setTimeout(()=>{
+            document.getElementById('registerModal').style.display = 'none';
+            document.getElementById('registerMsg').textContent = '';
+            checkLogin();
+        }, 1200);
+    };
+    propertyData.details = document.getElementById('details').value.trim();
+    propertyData.amenities = Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(e => e.value);
+    // Validate each field
+    (function() {
+        let valid = true;
+        if (!propertyData.title) { showError('errTitle', 'Enter property title'); setInputError('title', true); valid = false; } else { clearError('errTitle'); setInputError('title', false); }
+        if (!propertyData.saleRent) { showError('errSaleRent', 'Select sale/rent option'); setInputError('saleRent', true); valid = false; } else { clearError('errSaleRent'); setInputError('saleRent', false); }
+        if (!propertyData.type) { showError('errType', 'Select property type'); setInputError('type', true); valid = false; } else { clearError('errType'); setInputError('type', false); }
+        if (!propertyData.location) { showError('errLocation', 'Enter location'); setInputError('location', true); valid = false; } else { clearError('errLocation'); setInputError('location', false); }
+        if (!propertyData.price || propertyData.price <= 0) { showError('errPrice', 'Enter valid price'); setInputError('price', true); valid = false; } else { clearError('errPrice'); setInputError('price', false); }
+        if (!propertyData.details) { showError('errDetails', 'Enter property details'); setInputError('details', true); valid = false; } else { clearError('errDetails'); setInputError('details', false); }
+        if (!valid) return;
+        document.getElementById('wizardStep2').style.display = 'none';
+        document.getElementById('wizardStep3').style.display = 'block';
+    })();
+
+    // Step 3: Photo upload
+    document.getElementById('photos').onchange = function(e) {
+        photoFiles = Array.from(e.target.files);
+        const preview = document.getElementById('photoPreview');
+        preview.innerHTML = '';
+        photoFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = document.createElement('img');
+                img.src = ev.target.result;
+                img.style.width = '60px';
+                img.style.margin = '4px';
+                img.style.borderRadius = '4px';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+    document.getElementById('nextToLocation').onclick = function() {
+        document.getElementById('wizardStep3').style.display = 'none';
+        document.getElementById('wizardStep4').style.display = 'block';
+    };
+
+    // Step 4: Location selection
+    document.getElementById('nextToPreview').onclick = function() {
+    setWizardStep(5);
+    setWizardStep(2);
+    setWizardStep(3);
+    setWizardStep(4);
+        propertyData.mapLocation = document.getElementById('mapLocation').value;
+        document.getElementById('wizardStep4').style.display = 'none';
+        document.getElementById('wizardStep5').style.display = 'block';
+        showPreview();
+        showChargeInfo();
+    };
+
+    // Step 5: Preview & submit
+    function showPreview() {
+        let html = `<div class='preview-card'>`;
+        html += `<div class='preview-title'>${propertyData.title || ''}</div>`;
+        html += `<div class='preview-section'><strong>For:</strong> ${propertyData.saleRent === 'sale' ? 'Sale' : 'Rent'} | <strong>Type:</strong> ${propertyData.type || ''}</div>`;
+        html += `<div class='preview-section'><strong>Location:</strong> ${propertyData.location || ''}</div>`;
+        html += `<div class='preview-section'><strong>Price:</strong> ₹${propertyData.price || ''}</div>`;
+        html += `<div class='preview-section'><strong>Details:</strong> ${propertyData.details || ''}</div>`;
+        if (propertyData.amenities && propertyData.amenities.length) {
+            html += `<div class='preview-section'><strong>Amenities:</strong><div class='preview-amenities'>`;
+            propertyData.amenities.forEach(a => {
+                let icon = '';
+                if (a === 'Parking') icon = '<i class="fa-solid fa-car"></i>';
+                if (a === 'Lift') icon = '<i class="fa-solid fa-elevator"></i>';
+                if (a === 'Gym') icon = '<i class="fa-solid fa-dumbbell"></i>';
+                if (a === 'Security') icon = '<i class="fa-solid fa-shield"></i>';
+                if (a === 'Power Backup') icon = '<i class="fa-solid fa-bolt"></i>';
+                if (a === 'Swimming Pool') icon = '<i class="fa-solid fa-person-swimming"></i>';
+                if (a === 'Garden') icon = '<i class="fa-solid fa-leaf"></i>';
+                if (a === 'Children Play Area') icon = '<i class="fa-solid fa-child"></i>';
+                html += `<span class='preview-amenity'>${icon} ${a}</span>`;
+            });
+            html += `</div></div>`;
+        }
+        if (photoFiles.length) {
+            html += `<div class='preview-section'><strong>Photos:</strong><div class='preview-photos'>`;
+            photoFiles.forEach(file => {
+                html += `<img src='${URL.createObjectURL(file)}'>`;
+            });
+            html += `</div></div>`;
+        }
+        if (propertyData.lat && propertyData.lng) {
+            html += `<div class='preview-section'><strong>Map Location:</strong><div class='preview-map'><iframe width='100%' height='180' frameborder='0' style='border-radius:8px;' src='https://www.openstreetmap.org/export/embed.html?bbox=${propertyData.lng-0.005}%2C${propertyData.lat-0.005}%2C${propertyData.lng+0.005}%2C${propertyData.lat+0.005}&layer=mapnik&marker=${propertyData.lat}%2C${propertyData.lng}'></iframe></div></div>`;
+        } else if (propertyData.mapLocation) {
+            html += `<div class='preview-section'><strong>Map Location:</strong> ${propertyData.mapLocation}</div>`;
+        }
+        html += `</div>`;
+        document.getElementById('propertyPreview').innerHTML = html;
+    }
+
+    function showChargeInfo() {
+        let count = postedProperties[currentMobile] ? postedProperties[currentMobile].length : 0;
+        const info = document.getElementById('chargeInfo');
+        if (count === 0) {
+            info.textContent = 'Your first property post is FREE!';
+        } else {
+            info.textContent = 'Posting this property will cost Rs 500. Post lasts 90 days.';
+        }
+    }
+
+    document.getElementById('propertyPostForm').onsubmit = function(e) {
+    // Remove draft after successful post
+    localStorage.removeItem('propertyDraft');
+        e.preventDefault();
+        if (!verified) { alert('Please verify your mobile number first.'); return; }
+        let count = postedProperties[currentMobile] ? postedProperties[currentMobile].length : 0;
+        let charge = count === 0 ? 0 : 500;
+        if (charge > 0) {
+            if (!confirm('You will be charged Rs 500 for this post. Continue?')) return;
+        }
+        // Save property
+        let prop = {
+            ...propertyData,
+            photos: photoFiles.map(f => f.name),
+            postedOn: Date.now(),
+            expiresOn: Date.now() + 90*24*60*60*1000 // 90 days
+        };
+        if (!postedProperties[currentMobile]) postedProperties[currentMobile] = [];
+        postedProperties[currentMobile].push(prop);
+        localStorage.setItem('postedProperties', JSON.stringify(postedProperties));
+        // Show success modal
+        document.getElementById('successModal').style.display = 'flex';
+        showToast('Property posted successfully!');
+        // Prepare share links
+        let shareText = encodeURIComponent(`Check out my property on Ghar4Rent!\nTitle: ${prop.title}\nLocation: ${prop.location}\nPrice: ₹${prop.price}`);
+        document.getElementById('shareWhatsapp').href = `https://wa.me/?text=${shareText}`;
+        document.getElementById('shareFacebook').href = `https://www.facebook.com/sharer/sharer.php?u=https://ghar4rent.com&quote=${shareText}`;
+        document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?text=${shareText}`;
+        // Copy to clipboard
+        document.getElementById('copyDetailsBtn').onclick = function() {
+            navigator.clipboard.writeText(`Property Title: ${prop.title}\nLocation: ${prop.location}\nPrice: ₹${prop.price}\nDetails: ${prop.details}`);
+            document.getElementById('copyMsg').textContent = 'Copied to clipboard!';
+            setTimeout(()=>{document.getElementById('copyMsg').textContent='';},2000);
+        };
+        // Placeholder for view link (could be implemented to show property details page)
+        document.getElementById('viewPropertyLink').onclick = function(e) {
+            e.preventDefault();
+            alert('Feature coming soon: View your posted property!');
+        };
+        // Reset form
+        document.getElementById('propertyPostForm').reset();
+        document.getElementById('wizardStep5').style.display = 'none';
+        document.getElementById('wizardStep1').style.display = 'block';
+        document.getElementById('propertyPreview').innerHTML = '';
+        verified = false;
+        propertyData = {};
+        photoFiles = [];
+    };
+    </script>
+</body>
+</html>

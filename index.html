@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghar4Rent - Real Estate Solutions</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <meta name="description" content="Ghar4Rent is your trusted partner for renting and buying homes, flats, and commercial properties. Connect with us for professional real estate services.">
+    <meta name="keywords" content="rent, buy, real estate, Mumbai, flats, homes, property, Ghar4Rent">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "Ghar4Rent",
+      "url": "https://ghar4rent.com",
+    "logo": "logo.jpg",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91-9876543210",
+        "contactType": "customer service"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "123 Business Avenue",
+        "addressLocality": "Mumbai",
+        "addressCountry": "IN"
+      }
+    }
+    </script>
+    <style>
+        /* Subtle animations for cards and buttons */
+        .category-card, .blog-card, .cta-btn, button, .property-search button {
+            transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s, background 0.18s, color 0.18s;
+        }
+        .category-card:hover, .blog-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 6px 24px rgba(var(--brand-blue-rgb),0.2);
+        }
+        .cta-btn:hover, button:hover, .property-search button:hover {
+            background: var(--brand-blue-dark) !important;
+            color: #fff !important;
+            transform: scale(1.04);
+        }
+        .hero > div {
+            animation: fadeInHero 1.2s cubic-bezier(.4,2,.6,1);
+        }
+        @keyframes fadeInHero {
+            from { opacity: 0; transform: translateY(40px) scale(0.98); }
+            to { opacity: 1; transform: none; }
+        }
+        /* Responsive adjustments for mobile */
+        @media (max-width: 700px) {
+            .hero > div {
+                padding: 1.2rem 0.5rem;
+            }
+            .featured-categories > div, .recent-blogs > div, .testimonials-trust > div {
+                flex-direction: column !important;
+                gap: 18px !important;
+            }
+            .category-card, .blog-card {
+                min-width: 90vw !important;
+                max-width: 98vw !important;
+            }
+            .property-search form {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            footer > div {
+                flex-direction: column !important;
+                gap: 18px !important;
+                align-items: flex-start !important;
+            }
+        }
+        /* Optimize images for fast loading */
+        img, .hero {
+            image-rendering: auto;
+        }
+        img[loading="lazy"] {
+            filter: blur(2px);
+            transition: filter 0.3s;
+        }
+        img[loading="lazy"].loaded {
+            filter: none;
+        }
+            .logo {
+                width: 60px;
+                height: 60px;
+                margin-right: 10px;
+                vertical-align: middle;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #eee;
+            }
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--brand-blue); /* Blue background */
+            box-shadow: 0 2px 12px rgba(var(--brand-blue-rgb),0.1);
+            padding: 0 0 0 0;
+            transition: box-shadow 0.2s;
+        }
+        header .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #eee;
+        }
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: flex-end;
+            background: #333; /* Same background color as footer */
+            font-size: 1.08em;
+        }
+        nav a {
+            color: #fff; /* White text color */
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 6px;
+            transition: background 0.15s, color 0.15s;
+        }
+        nav a:hover, nav a.active {
+            background: var(--brand-blue-dark); /* Darker blue for hover */
+            color: #fff;
+        }
+        .menu-toggle {
+            display: none;
+        }
+        @media (max-width: 800px) {
+            nav {
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                background: var(--brand-blue); /* Blue background */
+                width: 100%; /* Full width for better visibility */
+                box-shadow: 0 2px 12px rgba(var(--brand-blue-rgb),0.1);
+                display: none;
+            }
+            nav.open {
+                display: flex;
+            }
+            nav a {
+                color: #fff; /* White text color */
+                padding: 12px 18px; /* Increased padding for better touch targets */
+                text-align: center; /* Center align text */
+            }
+            .menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 2rem;
+                color: #fff; /* White color for toggle button */
+                position: absolute;
+                right: 16px;
+                top: 10px;
+                cursor: pointer;
+            }
+        }
+      /* SVG section divider styles */
+      .divider {
+        display: block;
+        width: 100%;
+        margin: 0;
+        line-height: 0;
+      }
+      .divider { margin-bottom: -2px; }
+      .stats {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        margin: 2rem 0;
+      }
+      .stat {
+        background: var(--soft-blue);
+        border-radius: 12px;
+        box-shadow: 0 1px 8px rgba(37,99,235,0.08);
+        padding: 1rem 2rem;
+        text-align: center;
+        min-width: 120px;
+      }
+      .counter {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: var(--primary-blue);
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      .testimonials-slider {
+        position: relative;
+        max-width: 600px;
+        margin: 2rem auto 0 auto;
+        min-height: 80px;
+      }
+      .testimonial {
+        opacity: 0;
+        position: absolute;
+        left: 0; right: 0;
+        transition: opacity 0.7s;
+        font-size: 1.1rem;
+        color: var(--accent-blue);
+        background: var(--soft-blue);
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 1px 8px rgba(37,99,235,0.08);
+      }
+      .testimonial.active {
+        opacity: 1;
+        position: relative;
+      }
+      .floating-chat {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        z-index: 999;
+        animation: bounceIn 1.2s;
+      }
+      @keyframes bounceIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        60% { transform: scale(1.1); opacity: 1; }
+        80% { transform: scale(0.95); }
+        100% { transform: scale(1); }
+      }
+    /* Removed transparent header styles */
+    </style>
+</head>
+<body class="index-page">
+    <header data-aos="fade-down">
+    <a href="index.html"><img src="assets/logo.jpg" alt="Ghar4Rent Logo" class="logo"></a>
+    <button class="menu-toggle" aria-label="Open menu" onclick="document.querySelector('nav').classList.toggle('open')">&#9776;</button>
+    <nav>
+        <a href="index.html"><i class="fa-solid fa-house-user"></i> Home</a>
+        <a href="buy.html"><i class="fa-solid fa-cart-shopping"></i> Buy</a>
+        <a href="rent.html"><i class="fa-solid fa-house"></i> Rent</a>
+        <a href="commercial.html"><i class="fa-solid fa-building"></i> Commercial</a>
+        <a href="#footer" class="menu-link"><i class="fa-solid fa-phone"></i> Contact</a>
+    </nav>
+    </header>
+        <!-- Hero Section -->
+        <section class="hero hero-index">
+            <div class="hero-overlay">
+                <!-- Styled logo for Hero card -->
+                <img src="assets/logo.jpg" alt="Ghar4Rent Logo" class="logo hero-logo">
+                <h1 class="hero-title">Find Your Dream Home or Post Your Property Free</h1>
+                <p class="hero-subtitle">Ghar4Rent connects you with the best properties for rent and sale in your city. Hassle-free, verified, and professional real estate solutions.</p>
+                <a href="https://docs.google.com/forms/d/1bS-hWOkdpJR-pVE9PNhNmZKETXIIbV9OJ0sxGKdW1GU/edit?ts=68e05301" class="cta-btn hero-cta-btn" target="_blank">Post Property Now</a>
+            </div>
+        </section>
+        <!-- End Hero Section -->
+        <!-- Featured Categories Section -->
+        <section class="featured-categories-section">
+            <div class="featured-categories-container">
+                <a href="buy.html" class="category-card-link">
+                    <img src="assets/buy.png" alt="Buy" class="category-card-img">
+                    <h3 class="category-card-title">Buy</h3>
+                    <p class="category-card-text">Find your dream home from our verified listings.</p>
+                </a>
+                <a href="rent.html" class="category-card-link">
+                    <img src="assets/rent.png" alt="Rent" class="category-card-img">
+                    <h3 class="category-card-title">Rent</h3>
+                    <p class="category-card-text">Browse rental properties for every budget.</p>
+                </a>
+                <a href="commercial.html" class="category-card-link">
+                    <img src="assets/commercial.png" alt="Commercial" class="category-card-img">
+                    <h3 class="category-card-title">Commercial</h3>
+                    <p class="category-card-text">Explore offices, shops, and business spaces.</p>
+                </a>
+            </div>
+        </section>
+        <!-- End Featured Categories Section -->
+        <!-- Platform Benefits Section -->
+        <section class="platform-benefits-section">
+            <div class="platform-benefits-container">
+                <div class="benefit-item">
+                    <i class="fa-solid fa-check-circle benefit-icon"></i>
+                    <h3 class="benefit-title">100% Verified Listings</h3>
+                    <p class="benefit-text">All properties are checked for authenticity and accuracy.</p>
+                </div>
+                <div class="benefit-item">
+                    <i class="fa-solid fa-bullhorn benefit-icon"></i>
+                    <h3 class="benefit-title">Post Your Property Free</h3>
+                    <p class="benefit-text">No hidden charges for your first post. Get genuine leads fast.</p>
+                </div>
+                <div class="benefit-item">
+                    <i class="fa-solid fa-headset benefit-icon"></i>
+                    <h3 class="benefit-title">Expert Support</h3>
+                    <p class="benefit-text">Our team is here to help you at every step of your property journey.</p>
+                </div>
+            </div>
+        </section>
+        <!-- End Platform Benefits Section -->
+        <!-- Services Section -->
+        <section class="services-section">
+            <div class="services-container">
+                <h2 class="services-title">Our Services</h2>
+                <div class="service-items-container">
+                    <div class="service-item">
+                        <i class="fa-solid fa-gavel service-icon"></i>
+                        <h3 class="service-title">Legal Assistance</h3>
+                        <p class="service-text">We provide legal support for all property transactions to ensure a smooth and secure experience.</p>
+                    </div>
+                    <div class="service-item">
+                        <i class="fa-solid fa-house-damage service-icon"></i>
+                        <h3 class="service-title">Home Loans</h3>
+                        <p class="service-text">We help you get the best home loans from our partner banks.</p>
+                    </div>
+                    <div class="service-item">
+                        <i class="fa-solid fa-house-user service-icon"></i>
+                        <h3 class="service-title">Property Management</h3>
+                        <p class="service-text">We offer property management services for your rental properties.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Services Section -->
+        <!-- Property Search Bar removed as requested -->
+        <!-- End Property Search Bar -->
+        <!-- Testimonials & Trust Badges -->
+        <section class="testimonials-trust-section">
+            <div class="testimonials-trust-container">
+                <div class="testimonials-column">
+                    <h2 class="testimonials-title">What Our Users Say</h2>
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">“Ghar4Rent made it so easy to find my new apartment. The listings were genuine and the support was excellent!”</p>
+                        <span class="testimonial-author">— Priya S., Mumbai</span>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">“I posted my property for free and got genuine leads within days. Highly recommended!”</p>
+                        <span class="testimonial-author">— Rajesh K., Thane</span>
+                    </div>
+                </div>
+                <div class="trust-column">
+                    <h3 class="trust-title">Trusted By Thousands</h3>
+                    <div class="trust-badges-container">
+                        <div class="trust-badge">
+                            <i class="fa-solid fa-shield-halved trust-badge-icon"></i>
+                            <span class="trust-badge-text">100% Verified</span>
+                        </div>
+                        <div class="trust-badge">
+                            <i class="fa-solid fa-user-check trust-badge-icon"></i>
+                            <span class="trust-badge-text">Verified Listings</span>
+                        </div>
+                        <div class="trust-badge">
+                            <i class="fa-solid fa-lock trust-badge-icon"></i>
+                            <span class="trust-badge-text">Secure Platform</span>
+                        </div>
+                        <div class="trust-badge">
+                            <i class="fa-solid fa-thumbs-up trust-badge-icon"></i>
+                            <span class="trust-badge-text">Trusted Service</span>
+                        </div>
+                    </div>
+                    <div class="trust-subtitle">Thousands of happy customers across India</div>
+                </div>
+            </div>
+        </section>
+        <!-- End Testimonials & Trust Badges -->
+        <!-- Recent Blog Posts / News removed per request -->
+        <section id="post-property-free" class="post-property-free-section">
+            <h2>Post Your Property Free</h2>
+            <p>List your property for sale or rent. First post is free, subsequent posts are charged.</p>
+            <a href="https://docs.google.com/forms/d/1bS-hWOkdpJR-pVE9PNhNmZKETXIIbV9OJ0sxGKdW1GU/edit?ts=68e05301" class="post-property-button" target="_blank">Post Now</a>
+        </section>
+    <section id="rent" data-aos="fade-up">
+        <h2>Rent Property</h2>
+        <div class="property-list" id="rentPropertyList">
+            <!-- Cards will be rendered by JS -->
+        </div>
+        <div style="text-align:center;margin-top:1rem;">
+            <a href="rent.html" class="show-more-btn">Show More</a>
+        </div>
+    </section>
+    <section id="buy" data-aos="fade-up">
+        <h2>Buy Property</h2>
+        <div class="property-list" id="buyPropertyList">
+            <!-- Cards will be rendered by JS -->
+        </div>
+        <div style="text-align:center;margin-top:1rem;">
+            <a href="buy.html" class="show-more-btn">Show More</a>
+        </div>
+    </section>
+    <section id="commercial" data-aos="fade-up">
+        <h2>Commercial Spaces</h2>
+        <div class="property-list">
+            <div class="property-card">
+                <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Office" class="property-img">
+                <h3>Office Space in Noida</h3>
+                <p class="location">Sector 62, Noida</p>
+                <p class="price">₹1.2 Lakh/month</p>
+                <p>2000 sqft, Furnished, Parking</p>
+            </div>
+            <div class="property-card">
+                <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="Office" class="property-img">
+                <h3>Business Center in Mumbai</h3>
+                <p class="location">BKC, Mumbai</p>
+                <p class="price">₹2.5 Lakh/month</p>
+                <p>3500 sqft, Conference Rooms</p>
+            </div>
+            <div class="property-card">
+                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Office" class="property-img">
+                <h3>Retail Space in Bangalore</h3>
+                <p class="location">MG Road, Bangalore</p>
+                <p class="price">₹1.8 Lakh/month</p>
+                <p>1800 sqft, High Footfall</p>
+            </div>
+        </div>
+        <div style="text-align:center;margin-top:1rem;">
+            <a href="commercial.html" class="show-more-btn">Show More</a>
+        </div>
+    </section>
+    <svg class="divider" viewBox="=" 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="#60a5fa" fill-opacity="0.2" d="M0,32L60,37.3C120,43,240,53,360,69.3C480,85,600,107,720,101.3C840,96,960,64,1080,53.3C1200,43,1320,53,1380,58.7L1440,64L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path></svg>
+    <section id="about" data-aos="fade-up" data-aos-delay="300">
+        <h2>About Ghar4Rent</h2>
+        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" alt="Our Team" class="about-img">
+        <p>Ghar4Rent is a leading real estate business dedicated to helping clients find the perfect property. With years of experience and a commitment to transparency, we make property transactions smooth and secure.</p>
+        <ul>
+            <li>Experienced real estate professionals</li>
+            <li>Wide network of property owners and buyers</li>
+            <li>End-to-end support for every transaction</li>
+        </ul>
+    </section>
+    <section id="testimonials" data-aos="fade-up" data-aos-delay="400">
+        <h2>Client Testimonials</h2>
+        <div class="testimonials-slider">
+            <div class="testimonial active">
+                <blockquote>"Ghar4Rent helped me find my dream home quickly and easily!" – Priya S.</blockquote>
+            </div>
+            <div class="testimonial">
+                <blockquote>"Professional and transparent service. Highly recommended." – Rajesh K.</blockquote>
+            </div>
+            <div class="testimonial">
+                <blockquote>"Excellent support and great property options!" – Anjali M.</blockquote>
+            </div>
+        </div>
+    </section>
+    <section id="faq" data-aos="fade-up" data-aos-delay="500">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h4>How do I list my property?</h4>
+                <p>Contact us via the form or WhatsApp, and our team will guide you through the listing process.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Are all properties verified?</h4>
+                <p>Yes, every property is verified by our experts before being listed on Ghar4Rent.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Can I schedule a visit?</h4>
+                <p>Absolutely! Use the contact form or chat to schedule a property visit at your convenience.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Do you offer legal assistance?</h4>
+                <p>Yes, we provide legal support for all property transactions to ensure a smooth experience.</p>
+            </div>
+        </div>
+    </section>
+    <footer class="footer" data-aos="fade-up" id="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <img src="assets/logo.jpg" alt="Ghar4Rent Logo" class="footer-logo">
+                <p>Your trusted partner for renting and buying homes, flats, and commercial properties.</p>
+                <div class="footer-social-container">
+                    <a href="https://www.facebook.com/profile.php?id=100070029125310" class="footer-social-link" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/Ghar4Rent" class="footer-social-link" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/ghar4-rent-33042a244?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="footer-social-link" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="https://x.com/Ghar4Rent?t=mQlYFDn8wMSLTj9LioE2_w&s=08" class="footer-social-link" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="https://www.youtube.com/@SyedAshwaq-i3b" class="footer-social-link" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://wa.me/918985333583" class="footer-social-link" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4 class="footer-links-title">Quick Links</h4>
+                <a href="index.html" class="footer-link">Home</a>
+                <a href="buy.html" class="footer-link">Buy</a>
+                <a href="rent.html" class="footer-link">Rent</a>
+                <a href="commercial.html" class="footer-link">Commercial</a>
+               
+            </div>
+            <div class="footer-column">
+                <h4 class="footer-contact-title">Contact</h4>
+                <p class="footer-contact-item"><i class="fa-solid fa-phone"></i> +91 8985333583</p>
+                <p class="footer-contact-item"><i class="fa-solid fa-envelope"></i> <a href="mailto:info@ghar4rent.com" class="footer-email-link">info@ghar4rent.com</a></p>
+                <p class="footer-contact-item"><i class="fa-solid fa-location-dot"></i> Hyderabad, Telangana, India</p>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            &copy; 2025 Ghar4Rent. All rights reserved.
+        </div>
+    </footer>
+    <button id="goToTopBtn" title="Go to top">&uarr;</button>
+        <script src="properties.js"></script>
+        <script src="main.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+        <script>
+            AOS.init({ once: true });
+            // Animated counters
+            document.addEventListener('DOMContentLoaded', function() {
+                function animateCounter(counter) {
+                    const target = +counter.getAttribute('data-target');
+                    let count = 0;
+                    const increment = Math.ceil(target / 60);
+                    function update() {
+                        count += increment;
+                        if (count > target) count = target;
+                        counter.textContent = count;
+                        if (count < target) requestAnimationFrame(update);
+                    }
+                    update();
+                }
+                document.querySelectorAll('.counter').forEach(animateCounter);
+
+                // Menu item scrolls to section
+                document.getElementById('menuPostProperty').onclick = function(e) {
+                    e.preventDefault();
+                    document.getElementById('post-property-free').scrollIntoView({behavior:'smooth'});
+                };
+                // Post Now button navigates to post-property.html
+                document.getElementById('postNowBtn').onclick = function(e) {
+                    e.preventDefault();
+                    window.location.href = 'post-property.html';
+                };
+            });
+            // Testimonials slider
+            let testimonialIndex = 0;
+            const testimonials = document.querySelectorAll('.testimonial');
+            setInterval(() => {
+                testimonials.forEach((t, i) => t.classList.remove('active'));
+                testimonialIndex = (testimonialIndex + 1) % testimonials.length;
+                testimonials[testimonialIndex].classList.add('active');
+            }, 3500);
+            function toggleServiceDropdown(id) {
+                var el = document.getElementById(id);
+                el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+        const header = document.querySelector('header');
+
+        // Removed scroll event listener for transparency
+        window.removeEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.remove('transparent');
+            } else {
+                header.classList.add('transparent');
+            }
+        });
+
+        // Ensure header is not transparent
+        header.classList.remove('transparent');
+    });
+        </script>
+</body>
+</html>

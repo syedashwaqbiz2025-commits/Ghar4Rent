@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghar4Rent - Home</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: var(--brand-blue);
+            color: #fff;
+        }
+        .logo {
+            height: 40px;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 24px;
+            font-weight: 500;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .hero {
+            max-width: 800px;
+            margin: 60px auto;
+            text-align: center;
+            padding: 0 16px;
+        }
+        .hero h1 {
+            font-size: 2.5em;
+            margin-bottom: 16px;
+            color: var(--brand-blue);
+        }
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 24px;
+            color: #333;
+        }
+        .cta-btn {
+            background: #388e3c;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        .cta-btn:hover {
+            background: #2e7d32;
+        }
+        footer {
+            text-align: center;
+            padding: 16px 0;
+            background: #f1f1f1;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html"><img src="assets/logo.jpg" alt="Ghar4Rent Logo" class="logo"></a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="buy.html">Buy</a>
+            <a href="rent.html">Rent</a>
+            <a href="commercial.html">Commercial</a>
+            <a href="post-property.html">Post Property</a>
+        </nav>
+    </header>
+    <section class="hero">
+        <h1>Welcome to Ghar4Rent</h1>
+        <p>Your one-stop solution for renting, buying, and selling properties.</p>
+        <a href="buy.html" class="cta-btn">Explore Properties</a>
+    </section>
+    <footer>
+        <p>&copy; 2025 Ghar4Rent. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+/* rent-style.css: Custom styles for rent.html header, nav, logo, and footer (copied from buy-style.css) */
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    background: var(--white);
+    color: var(--text-dark);
+}
+header {
+    background: var(--primary-blue);
+    color: var(--white);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+    position: relative;
+    z-index: 10;
+    transition: box-shadow 0.2s;
+}
+header .logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eee;
+    margin-right: 12px;
+}
+nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+    background: none;
+    font-size: 1.08em;
+}
+nav a {
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+nav a:hover, nav a.active {
+    background: var(--secondary-blue);
+    color: var(--accent-blue);
+}
+.menu-toggle {
+    display: none;
+}
+@media (max-width: 800px) {
+    nav {
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #fff;
+        width: 200px;
+    box-shadow: 0 2px 12px rgba(var(--brand-blue-rgb),0.1);
+        display: none;
+    }
+    nav.open {
+        display: flex;
+    }
+    .menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 2rem;
+    color: var(--brand-blue);
+        position: absolute;
+        right: 16px;
+        top: 10px;
+        cursor: pointer;
+    }
+}
+
+/* Mobile toggle/menu behavior (match global improvements) */
+@media (max-width: 900px) {
+    .menu-toggle {
+        position: fixed !important;
+        top: 12px;
+        right: 14px;
+        z-index: 10005;
+        display: block !important;
+        background: rgba(255,255,255,0.98);
+        color: var(--brand-blue);
+        border-radius: 8px;
+        padding: 6px 10px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        border: none;
+    }
+    header { position: relative; z-index: 10006; }
+    nav { position: fixed; left: 0; right: 0; top: 0; width: auto; height: 0; overflow: hidden; display:flex; flex-direction:column; align-items:center; transform: translateY(-6px); opacity:0; transition: transform 260ms ease, opacity 260ms ease, height 260ms ease; z-index:10004; background: transparent; }
+    nav.open { height: calc(100vh - 12px); opacity:1; transform:translateY(0); padding-top:calc(var(--header-height,64px) + 12px); overflow:auto; -webkit-overflow-scrolling: touch; padding-left:12px; padding-right:12px; }
+    nav a { display:block; width:auto; max-width:560px; padding:12px 18px; margin:6px auto; font-size:1.02rem; text-align:center; border-radius:6px; box-sizing:border-box; }
+    .rent-page nav.open, .rent-page nav.open a { color:#fff !important; background:linear-gradient(180deg, var(--brand-blue), var(--brand-blue-dark)) !important; }
+}
+footer {
+    background: #2563eb;
+    color: #fff;
+    border-radius: 0 0 16px 16px;
+    margin-top: 2rem;
+    box-shadow: 0 -2px 8px rgba(30,41,59,0.08);
+    padding: 2rem 1rem 1rem 1rem;
+}

@@ -1,0 +1,185 @@
+            .logo {
+                width: 60px;
+                height: 60px;
+                margin-right: 10px;
+                vertical-align: middle;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #eee;
+            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Ghar4Rent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+</head>
+<body>
+    <header>
+    <a href="index.html"><img src="logo.jpg" alt="Ghar4Rent Logo" class="logo"></a>
+        <nav>
+            <a href="index.html"><i class="fa-solid fa-house-user"></i> Home</a>
+            <a href="buy.html"><i class="fa-solid fa-cart-shopping"></i> Buy</a>
+            <a href="rent.html"><i class="fa-solid fa-house-user"></i> Rent</a>
+            <a href="commercial.html"><i class="fa-solid fa-building"></i> Commercial</a>
+            <a href="#contact"><i class="fa-solid fa-phone"></i> Contact</a>
+        </nav>
+    </header>
+    <section id="projects">
+        <h2>All Projects</h2>
+        <div class="filters">
+            <select id="projectsTypeFilter" onchange="filterProjectsCards()">
+                <option value="all">All Property Types</option>
+                <option value="apartment">Flat/Apartment</option>
+                <option value="independent">Independent House</option>
+                <option value="villa">Villa</option>
+                <option value="commercial">Commercial</option>
+                <option value="farmhouse">Farm House</option>
+            </select>
+            <select id="projectsBedroomFilter" onchange="filterProjectsCards()">
+                <option value="all">All Bedrooms</option>
+                <option value="1RK">1RK/1BHK</option>
+                <option value="2BHK">2BHK</option>
+                <option value="3BHK">3BHK</option>
+                <option value="4BHK">4BHK</option>
+                <option value="4+BHK">4+BHK</option>
+            </select>
+            <select id="projectsFurnishingFilter" onchange="filterProjectsCards()">
+                <option value="all">All Furnishing Types</option>
+                <option value="semi">Semi Furnished</option>
+                <option value="full">Fully Furnished</option>
+                <option value="none">Unfurnished</option>
+            </select>
+            <select id="projectsLocationFilter" onchange="filterProjectsCards()">
+                <option value="all">All Locations</option>
+                <option value="Gachibowli">Gachibowli</option>
+                <option value="Hitech City">Hitech City</option>
+                <option value="Jubilee Hills">Jubilee Hills</option>
+                <option value="Banjara Hills">Banjara Hills</option>
+                <option value="Kondapur">Kondapur</option>
+                <option value="Madhapur">Madhapur</option>
+                <option value="Manikonda">Manikonda</option>
+                <option value="Shamshabad">Shamshabad</option>
+                <option value="Begumpet">Begumpet</option>
+                <option value="Secunderabad">Secunderabad</option>
+            </select>
+            <select id="projectsMinPrice" onchange="filterProjectsCards()">
+                <option value="0">Min Price</option>
+                <option value="1000">1k</option>
+                <option value="2000">2k</option>
+                <option value="3000">3k</option>
+                <option value="4000">4k</option>
+                <option value="5000">5k</option>
+                <option value="6000">6k</option>
+                <option value="7000">7k</option>
+                <option value="8000">8k</option>
+                <option value="9000">9k</option>
+                <option value="10000">10k</option>
+                <option value="20000">20k</option>
+                <option value="30000">30k</option>
+                <option value="40000">40k</option>
+                <option value="50000">50k</option>
+                <option value="60000">60k</option>
+                <option value="70000">70k</option>
+                <option value="80000">80k</option>
+                <option value="90000">90k</option>
+                <option value="100000">1 Lakh</option>
+                <option value="200000">2 Lakh</option>
+                <option value="300000">3 Lakh</option>
+                <option value="400000">4 Lakh</option>
+                <option value="500000">5 Lakh</option>
+                <option value="600000">6 Lakh</option>
+                <option value="700000">7 Lakh</option>
+                <option value="800000">8 Lakh</option>
+                <option value="900000">9 Lakh</option>
+                <option value="1000000">10 Lakh</option>
+            </select>
+            <select id="projectsMaxPrice" onchange="filterProjectsCards()">
+                <option value="100000000">Max Price</option>
+                <option value="1000">1k</option>
+                <option value="2000">2k</option>
+                <option value="3000">3k</option>
+                <option value="4000">4k</option>
+                <option value="5000">5k</option>
+                <option value="6000">6k</option>
+                <option value="7000">7k</option>
+                <option value="80000">80k</option>
+                <option value="90000">90k</option>
+                <option value="100000">1 Lakh</option>
+                <option value="200000">2 Lakh</option>
+                <option value="300000">3 Lakh</option>
+                <option value="400000">4 Lakh</option>
+                <option value="500000">5 Lakh</option>
+                <option value="600000">6 Lakh</option>
+                <option value="700000">7 Lakh</option>
+                <option value="800000">8 Lakh</option>
+                <option value="900000">9 Lakh</option>
+                <option value="1000000">10 Lakh</option>
+                <option value="10000000">1 Crore</option>
+                <option value="100000000">10+ Lakh</option>
+            </select>
+        </div>
+        <div class="property-list" id="projectsPropertyList">
+            <!-- Cards will be rendered by JS -->
+        </div>
+    </section>
+    <script>
+    const projectsProperties = [
+    {type:'villa', bedrooms:'4BHK', furnishing:'semi', location:'Bannerghatta, Bangalore', price:22000000, title:'Green Meadows', details:'4BHK, Semi Furnished, Villas, Clubhouse', img:'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'1RK', furnishing:'semi', location:'Thane, Mumbai', price:11000000, title:'Skyline Towers', details:'1RK, Semi Furnished, Smart Homes, Clubhouse', img:'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'3BHK', furnishing:'full', location:'Kharadi, Pune', price:9500000, title:'Sunrise Residency', details:'3BHK, Fully Furnished, Pool, Gym', img:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80'},
+    {type:'villa', bedrooms:'4BHK', furnishing:'semi', location:'Whitefield, Bangalore', price:13000000, title:'Blue Valley', details:'4BHK, Semi Furnished, Villas, Clubhouse', img:'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'2BHK', furnishing:'none', location:'OMR, Chennai', price:12000000, title:'Elite Heights', details:'2BHK, Unfurnished, Pool, Gym', img:'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'3BHK', furnishing:'semi', location:'Golf Course Road, Gurgaon', price:18000000, title:'Royal Greens', details:'3BHK, Semi Furnished, City View', img:'https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=400&q=80'},
+    {type:'villa', bedrooms:'4+BHK', furnishing:'full', location:'Gachibowli, Hyderabad', price:11000000, title:'Urban Nest', details:'5BHK, Fully Furnished, East Facing', img:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'2BHK', furnishing:'semi', location:'Malviya Nagar, Jaipur', price:10500000, title:'Lakeview Residency', details:'2BHK, Semi Furnished, Lake View', img:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'3BHK', furnishing:'full', location:'Dwarka, Delhi', price:13000000, title:'Silver Springs', details:'3BHK, Fully Furnished, Pool, Gym', img:'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'1RK', furnishing:'semi', location:'Thane, Mumbai', price:14000000, title:'Golden Enclave', details:'1RK, Semi Furnished, Smart Homes', img:'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'2BHK', furnishing:'full', location:'Jubilee Hills, Hyderabad', price:15000000, title:'Apartment in Jubilee Hills', details:'2BHK, 1200 sqft, Fully Furnished, Pool', img:'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80'},
+    {type:'independent', bedrooms:'3BHK', furnishing:'semi', location:'Hitech City, Hyderabad', price:13000000, title:'House in Hitech City', details:'3BHK, 1800 sqft, Semi Furnished, Parking', img:'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80'},
+    {type:'villa', bedrooms:'4BHK', furnishing:'none', location:'Banjara Hills, Hyderabad', price:17000000, title:'Villa in Banjara Hills', details:'4BHK, 4000 sqft, Unfurnished, Garden', img:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'2BHK', furnishing:'semi', location:'Kondapur, Hyderabad', price:12000000, title:'Apartment in Kondapur', details:'2BHK, 1100 sqft, Semi Furnished, Gym', img:'https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=400&q=80'},
+    {type:'independent', bedrooms:'3BHK', furnishing:'full', location:'Madhapur, Hyderabad', price:14000000, title:'House in Madhapur', details:'3BHK, 2000 sqft, Fully Furnished, East Facing', img:'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'1RK', furnishing:'none', location:'Manikonda, Hyderabad', price:9000000, title:'Studio in Manikonda', details:'1RK, 500 sqft, Unfurnished, Near IT Park', img:'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=400&q=80'},
+    {type:'villa', bedrooms:'4BHK', furnishing:'semi', location:'Shamshabad, Hyderabad', price:16000000, title:'Villa in Shamshabad', details:'4BHK, 3500 sqft, Semi Furnished, Garden', img:'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80'},
+    {type:'apartment', bedrooms:'3BHK', furnishing:'full', location:'Begumpet, Hyderabad', price:18000000, title:'Apartment in Begumpet', details:'3BHK, 1600 sqft, Fully Furnished, Pool', img:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80'},
+    {type:'independent', bedrooms:'2BHK', furnishing:'semi', location:'Secunderabad, Hyderabad', price:11000000, title:'House in Secunderabad', details:'2BHK, 1200 sqft, Semi Furnished, Parking', img:'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=400&q=80'}
+    ];
+    function filterProjectsCards() {
+        const bedroom = document.getElementById('projectsBedroomFilter').value;
+        const type = document.getElementById('projectsTypeFilter').value;
+        const furnishing = document.getElementById('projectsFurnishingFilter').value;
+        const location = document.getElementById('projectsLocationFilter').value;
+        const minPrice = parseInt(document.getElementById('projectsMinPrice').value);
+        const maxPrice = parseInt(document.getElementById('projectsMaxPrice').value);
+        let filtered = projectsProperties.filter(p => {
+            const matchesBedroom = bedroom === 'all' || p.bedrooms === bedroom;
+            const matchesType = type === 'all' || p.type === type;
+            const matchesFurnishing = furnishing === 'all' || p.furnishing === furnishing;
+            const matchesLocation = location === 'all' || p.location.includes(location);
+            const matchesMinPrice = isNaN(minPrice) || p.price >= minPrice;
+            const matchesMaxPrice = isNaN(maxPrice) || p.price <= maxPrice;
+            return matchesBedroom && matchesType && matchesFurnishing && matchesLocation && matchesMinPrice && matchesMaxPrice;
+        });
+        renderProjectsCards(filtered);
+    }
+    function renderProjectsCards(list) {
+        const container = document.getElementById('projectsPropertyList');
+        container.innerHTML = '';
+        if (list.length === 0) {
+            container.innerHTML = '<p>No properties found.</p>';
+            return;
+        }
+        list.forEach(prop => {
+            const card = document.createElement('div');
+            card.className = 'property-card';
+            card.innerHTML = `<img src='${prop.img}' alt='${prop.title}' class='property-img'><h3>${prop.title}</h3><p class='location'>${prop.location}</p><p class='price'>₹${(prop.price/100000).toFixed(2)} Lakh</p><p>${prop.details}</p>`;
+            container.appendChild(card);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', filterProjectsCards);
+    </script>
+</body>
+</html>

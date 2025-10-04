@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Properties - Ghar4Rent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="buy-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <style>
+        /* Subtle animations for cards and buttons */
+        .category-card, .blog-card, .cta-btn, button, .property-search button {
+            transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s, background 0.18s, color 0.18s;
+        }
+        .category-card:hover, .blog-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 6px 24px rgba(var(--brand-blue-rgb),0.2);
+        }
+        .cta-btn:hover, button:hover, .property-search button:hover {
+            background: var(--brand-blue-dark) !important;
+            color: #fff !important;
+            transform: scale(1.04);
+        }
+        .hero > div {
+            animation: fadeInHero 1.2s cubic-bezier(.4,2,.6,1);
+        }
+        @keyframes fadeInHero {
+            from { opacity: 0; transform: translateY(40px) scale(0.98); }
+            to { opacity: 1; transform: none; }
+        }
+        /* Responsive adjustments for mobile */
+        @media (max-width: 700px) {
+            .hero > div {
+                padding: 1.2rem 0.5rem;
+            }
+            .featured-categories > div, .recent-blogs > div, .testimonials-trust > div {
+                flex-direction: column !important;
+                gap: 18px !important;
+            }
+            .category-card, .blog-card {
+                min-width: 90vw !important;
+                max-width: 98vw !important;
+            }
+            .property-search form {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            footer > div {
+                flex-direction: column !important;
+                gap: 18px !important;
+                align-items: flex-start !important;
+            }
+        }
+        /* Optimize images for fast loading */
+        img, .hero {
+            image-rendering: auto;
+        }
+        img[loading="lazy"] {
+            filter: blur(2px);
+            transition: filter 0.3s;
+        }
+        img[loading="lazy"].loaded {
+            filter: none;
+        }
+            .logo {
+                width: 60px;
+                height: 60px;
+                margin-right: 10px;
+                vertical-align: middle;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #eee;
+            }
+        /* Make header fixed so nav stays visible while scrolling on buy page */
+        body { padding-top: 64px; }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(var(--brand-blue-rgb),0.1);
+            padding: 0 0 0 0;
+            transition: box-shadow 0.2s;
+            width: 100%;
+        }
+        header .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #eee;
+        }
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: flex-end;
+            background: var(--brand-blue); /* Solid blue background */
+            font-size: 1.08em;
+        }
+        nav a {
+            color: #fff; /* White text for contrast */
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 6px;
+            transition: background 0.15s, color 0.15s;
+        }
+        nav a:hover, nav a.active {
+            background: var(--brand-blue-dark); /* Darker blue on hover */
+            color: #fff !important;
+        }
+        .menu-toggle {
+            display: none;
+        }
+        @media (max-width: 800px) {
+            nav {
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                background: #fff;
+                width: 200px;
+                box-shadow: 0 2px 12px rgba(var(--brand-blue-rgb),0.1);
+                display: none;
+            }
+            nav.open {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 2rem;
+                color: var(--brand-blue);
+                position: absolute;
+                right: 16px;
+                top: 10px;
+                cursor: pointer;
+            }
+        }
+      /* SVG section divider styles */
+      .divider {
+        display: block;
+        width: 100%;
+        margin: 0;
+        line-height: 0;
+      }
+      .divider { margin-bottom: -2px; }
+      .stats {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        margin: 2rem 0;
+      }
+      .stat {
+        background: var(--soft-blue);
+        border-radius: 12px;
+        box-shadow: 0 1px 8px rgba(37,99,235,0.08);
+        padding: 1rem 2rem;
+        text-align: center;
+        min-width: 120px;
+      }
+      .counter {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: var(--primary-blue);
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      .testimonials-slider {
+        position: relative;
+        max-width: 600px;
+        margin: 2rem auto 0 auto;
+        min-height: 80px;
+      }
+      .testimonial {
+        opacity: 0;
+        position: absolute;
+        left: 0; right: 0;
+        transition: opacity 0.7s;
+        font-size: 1.1rem;
+        color: var(--accent-blue);
+        background: var(--soft-blue);
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 1px 8px rgba(37,99,235,0.08);
+      }
+      .testimonial.active {
+        opacity: 1;
+        position: relative;
+      }
+      .floating-chat {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        z-index: 999;
+        animation: bounceIn 1.2s;
+      }
+      @keyframes bounceIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        60% { transform: scale(1.1); opacity: 1; }
+        80% { transform: scale(0.95); }
+        100% { transform: scale(1); }
+      }
+            /* .filters styles centralized in style.css; keep page-specific dropdown/search rules below */
+            .search-field {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .search-field i { color: var(--brand-blue); }
+            .suggestions-container {
+                display: none;
+                position: absolute;
+                top: calc(100% + 6px);
+                left: 0;
+                right: 0;
+                background: #fff;
+                border: 1px solid #b0c4de;
+                box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+                z-index: 2000;
+                max-height: 220px;
+                overflow: auto;
+                border-radius: 6px;
+            }
+            .suggestion-item {
+                padding: 8px 12px;
+                cursor: pointer;
+                font-size: 15px;
+                color: #12263a;
+            }
+            .suggestion-item:hover { background:#f1f5fb; }
+                    .suggestion-item.no-results { color: #666; font-style: italic; }
+                    /* dropdown styles centralized in style.css */
+    </style>
+</head>
+<body class="buy-page">
+    <header data-aos="fade-down">
+    <a href="index.html"><img src="assets/logo.jpg" alt="Ghar4Rent Logo" class="logo"></a>
+    <button class="menu-toggle" aria-label="Open menu" onclick="document.querySelector('nav').classList.toggle('open')">&#9776;</button>
+    <nav>
+    <a href="index.html"><i class="fa-solid fa-house-user"></i> Home</a>
+    <a href="buy.html"><i class="fa-solid fa-cart-shopping"></i> Buy</a>
+    <a href="rent.html"><i class="fa-solid fa-house"></i> Rent</a>
+    <a href="commercial.html"><i class="fa-solid fa-building"></i> Commercial</a>
+    
+    <a href="#footer" class="menu-link"><i class="fa-solid fa-phone"></i> Contact</a>
+    </nav>
+    </header>
+    <!-- Hero Section -->
+    <section class="hero hero-buy">
+      <div class="hero-overlay">
+        <h1 class="hero-title">Find Properties to Buy</h1>
+        <p class="hero-subtitle">Browse verified listings and discover your dream home or investment property with Ghar4Rent.</p>
+        <a href="https://docs.google.com/forms/d/1bS-hWOkdpJR-pVE9PNhNmZKETXIIbV9OJ0sxGKdW1GU/edit?ts=68e05301" class="post-property-button" target="_blank">Post Property Now</a>
+      </div>
+    </section>
+    <!-- Testimonials & Trust Badges Section -->
+    <!-- ...existing code... -->
+
+    <!-- Recent Blog/News Section -->
+    <!-- ...existing code... -->
+    <!-- End Hero Section -->
+        <!-- Featured Categories Section -->
+        <!-- End Featured Categories Section -->
+    <section id="buy" class="animate-fadein">
+    <h2 style="text-align:center;font-size:2rem;font-weight:700;margin:32px 0 18px 0;color:var(--brand-blue);letter-spacing:0.5px;">All Buy Properties</h2>
+    <div class="filters">
+            <select id="buyTypeFilter" onchange="filterBuyCards()" style="padding:7px 12px;border-radius:6px;border:1px solid #b0c4de;">
+                <option value="all">All Property Types</option>
+                <option value="apartment">Flat/Apartment</option>
+                <option value="independent">Independent House</option>
+                <option value="villa">Villa</option>
+                <option value="commercial">Commercial</option>
+                <option value="farmhouse">Farm House</option>
+            </select>
+            <select id="buyBedroomFilter" onchange="filterBuyCards()" style="padding:7px 12px;border-radius:6px;border:1px solid #b0c4de;">
+                <option value="all">All Bedrooms</option>
+                <option value="1RK">1RK/1BHK</option>
+                <option value="2BHK">2BHK</option>
+                <option value="3BHK">3BHK</option>
+                <option value="4BHK">4BHK</option>
+                <option value="4+BHK">4+BHK</option>
+            </select>
+            <select id="buyFurnishingFilter" onchange="filterBuyCards()" style="padding:7px 12px;border-radius:6px;border:1px solid #b0c4de;">
+                <option value="all">All Furnishing Types</option>
+                <option value="semi">Semi Furnished</option>
+                <option value="full">Fully Furnished</option>
+                <option value="none">Unfurnished</option>
+            </select>
+            <div class="location-dropdown" id="locationDropdown">
+                <div class="dropdown-toggle" id="dropdownToggle"><i class="fa-solid fa-location-dot"></i> <span id="dropdownLabel">Select location</span></div>
+                <div class="dropdown-panel" id="dropdownPanel">
+                    <input type="text" id="dropdownSearch" placeholder="Search Hyderabad locations...">
+                    <div class="dropdown-list" id="dropdownList">
+                        <!-- Hyderabad locations populated by JS -->
+                    </div>
+                </div>
+                <!-- hidden field used by existing filters JS -->
+                <input type="hidden" id="buyLocationFilter" value="">
+            </div>
+            <!-- Distance/radius filter removed per request -->
+            <select id="buyMinPrice" onchange="filterBuyCards()" style="padding:7px 12px;border-radius:6px;border:1px solid #b0c4de;width:120px;">
+                <option value="0">Min Price</option>
+                <option value="1000">₹1k</option>
+                <option value="2000">₹2k</option>
+                <option value="3000">₹3k</option>
+                <option value="4000">₹4k</option>
+                <option value="5000">₹5k</option>
+                <option value="6000">₹6k</option>
+                <option value="7000">₹7k</option>
+                <option value="8000">₹8k</option>
+                <option value="9000">₹9k</option>
+                <option value="10000">₹10k</option>
+                <option value="20000">₹20k</option>
+                <option value="30000">₹30k</option>
+                <option value="40000">₹40k</option>
+                <option value="50000">₹50k</option>
+                <option value="60000">₹60k</option>
+                <option value="70000">₹70k</option>
+                <option value="80000">₹80k</option>
+                <option value="90000">₹90k</option>
+                <option value="100000">₹1 Lakh</option>
+                <option value="200000">₹2 Lakh</option>
+                <option value="300000">₹3 Lakh</option>
+                <option value="400000">₹4 Lakh</option>
+                <option value="500000">₹5 Lakh</option>
+                <option value="60000">₹6 Lakh</option>
+                <option value="70000">₹7 Lakh</option>
+                <option value="80000">₹8 Lakh</option>
+                <option value="90000">₹9 Lakh</option>
+                <option value="1000000">₹10 Lakh</option>
+            </select>
+            <select id="buyMaxPrice" onchange="filterBuyCards()" style="padding:7px 12px;border-radius:6px;border:1px solid #b0c4de;width:120px;">
+                <option value="100000000">Max Price</option>
+                <option value="1000">₹1k</option>
+                <option value="2000">₹2k</option>
+                <option value="3000">₹3k</option>
+                <option value="4000">₹4k</option>
+                <option value="5000">₹5k</option>
+                <option value="6000">₹6k</option>
+                <option value="7000">₹7k</option>
+                <option value="8000">₹8k</option>
+                <option value="9000">₹9k</option>
+                <option value="10000">₹10k</option>
+                <option value="20000">₹20k</option>
+                <option value="30000">₹30k</option>
+                <option value="40000">₹40k</option>
+                <option value="50000">₹50k</option>
+                <option value="60000">₹60k</option>
+                <option value="70000">₹70k</option>
+                <option value="80000">₹80k</option>
+                <option value="90000">₹9 Lakh</option>
+                <option value="100000">₹1 Lakh</option>
+                <option value="200000">₹2 Lakh</option>
+                <option value="300000">₹3 Lakh</option>
+                <option value="400000">₹4 Lakh</option>
+                <option value="500000">₹5 Lakh</option>
+                <option value="60000">₹6 Lakh</option>
+                <option value="70000">₹7 Lakh</option>
+                <option value="80000">₹8 Lakh</option>
+                <option value="900000">₹9 Lakh</option>
+                <option value="1000000">₹10 Lakh</option>
+                <option value="10000000">₹1 Crore</option>
+            </select>
+            
+        </div>
+    <div class="filter-summary" id="buyFilterSummary" style="text-align:center;font-size:1.15rem;font-weight:500;margin:18px 0 18px 0;color:var(--brand-blue);"><!-- JS will update this --></div>
+          <div class="property-list" id="buyPropertyList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:24px;align-items:stretch;margin-top:0;">
+              <!-- Cards will be rendered by JS -->
+          </div>
+    </section>
+
+    <!-- Platform Benefits Section -->
+    <!-- ...existing code... -->
+    <footer class="footer" data-aos="fade-up" id="footer">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <img src="assets/logo.jpg" alt="Ghar4Rent Logo" class="footer-logo">
+                    <p>Your trusted partner for renting and buying homes, flats, and commercial properties.</p>
+                    <div class="footer-social-container">
+                        <a href="https://www.facebook.com/profile.php?id=100070029125310" class="footer-social-link" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/Ghar4Rent" class="footer-social-link" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/in/ghar4-rent-33042a244?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="footer-social-link" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="https://x.com/Ghar4Rent?t=mQlYFDn8wMSLTj9LioE2_w&s=08" class="footer-social-link" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://www.youtube.com/@SyedAshwaq-i3b" class="footer-social-link" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://wa.me/918985333583" class="footer-social-link" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-links-title">Quick Links</h4>
+                    <a href="index.html" class="footer-link">Home</a>
+                    <a href="buy.html" class="footer-link">Buy</a>
+                    <a href="rent.html" class="footer-link">Rent</a>
+                    <a href="commercial.html" class="footer-link">Commercial</a>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-contact-title">Contact</h4>
+                    <p class="footer-contact-item"><i class="fa-solid fa-phone"></i> +91 8985333583</p>
+                    <p class="footer-contact-item"><i class="fa-solid fa-envelope"></i> <a href="mailto:info@ghar4rent.com" class="footer-email-link">info@ghar4rent.com</a></p>
+                    <p class="footer-contact-item"><i class="fa-solid fa-location-dot"></i> Hyderabad, Telangana, India</p>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2025 Ghar4Rent. All rights reserved.
+            </div>
+        </footer>
+    <button id="goToTopBtn" title="Go to top">&uarr;</button>
+    <script>
+        // When opening pages directly via file://, point the client at the running proxy.
+        // Change this if your proxy runs on a different host/port.
+        window.PLACES_PROXY_URL = 'http://localhost:3000/api/places/autocomplete';
+    </script>
+    <script src="properties.js"></script>
+    <script src="buy.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <!-- Fixed header handled by buy-style.css (.buy-page header) -->
+    <script>
+        if (window.AOS) AOS.init({ once: true });
+        document.addEventListener('DOMContentLoaded', function() {
+            // menuPostProperty: scroll to on-page section if present, otherwise follow link to post-property.html
+            var menuPost = document.getElementById('menuPostProperty');
+            if (menuPost) {
+                menuPost.addEventListener('click', function(e) {
+                    var target = document.getElementById('post-property-free');
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({behavior:'smooth'});
+                    }
+                    // if target not on this page, default link behavior will navigate to post-property.html
+                });
+            }
+            var postNowBtn = document.getElementById('postNowBtn');
+            if (postNowBtn) {
+                postNowBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'post-property.html';
+                });
+            }
+        });
+        // Testimonials slider (guarded)
+        (function() {
+            var testimonials = document.querySelectorAll('.testimonial');
+            if (!testimonials || testimonials.length === 0) return;
+            var testimonialIndex = 0;
+            setInterval(function(){
+                testimonials.forEach(function(t){ t.classList.remove('active'); });
+                testimonialIndex = (testimonialIndex + 1) % testimonials.length;
+                testimonials[testimonialIndex].classList.add('active');
+            }, 3500);
+        })();
+        function toggleServiceDropdown(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

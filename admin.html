@@ -1,0 +1,46 @@
+            .logo {
+                width: 60px;
+                height: 60px;
+                margin-right: 10px;
+                vertical-align: middle;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #eee;
+            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ghar4Rent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+    <a href="index.html"><img src="logo.jpg" alt="Ghar4Rent Logo" class="logo"></a>
+        <nav>
+        <a href="index.html"><img src="assets/logo.jpg" alt="Ghar4Rent Logo" class="logo" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #eee;margin-right:12px;"></a>
+        <button class="menu-toggle" aria-label="Open menu" onclick="document.querySelector('nav').classList.toggle('open')">&#9776;</button>
+        <nav>
+           <a href="index.html"><i class="fa-solid fa-house-user"></i> Home</a>
+           <a href="buy.html"><i class="fa-solid fa-cart-shopping"></i> Buy</a>
+           <a href="rent.html"><i class="fa-solid fa-house"></i> Rent</a>
+           <a href="commercial.html"><i class="fa-solid fa-building"></i> Commercial</a>
+           
+           <a href="#contact"><i class="fa-solid fa-phone"></i> Contact</a>
+        </nav>
+    </header>
+    <section class="admin-dashboard">
+        <h2>Admin Dashboard</h2>
+        <p>Manage property listings, view inquiries, and update website content here.</p>
+        <ul>
+            <li><a href="#">Add New Property</a></li>
+            <li><a href="#">View Inquiries</a></li>
+            <li><a href="#">Edit Content</a></li>
+        </ul>
+    </section>
+    <footer>
+        <p>&copy; 2025 Ghar4Rent. All rights reserved.</p>
+    </footer>
+</body>
+</html>

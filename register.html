@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Ghar4Rent</title>
+    <link rel="stylesheet" href="style.css">
+        <h2>Register</h2>
+        <form id="registerForm" autocomplete="off">
+            <input type="text" id="registerUsername" name="registerUsername" placeholder="Username" required>
+            <input type="tel" id="registerMobile" name="registerMobile" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" required aria-label="Mobile Number" autocomplete="tel">
+            <input type="password" id="registerPassword" name="registerPassword" placeholder="Password" required>
+            <div class="error-msg" id="registerMsg"></div>
+        <script>
+        document.getElementById('registerForm').onsubmit = function(e) {
+            e.preventDefault();
+            window.location.href = 'post-property.html';
+        }, 1200);
+        };
+    </script>
+    <img src="assets/logo.jpg" alt="Logo">
+    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Ghar4Rent</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #f7faff; font-family: 'Segoe UI', Arial, sans-serif; }
+        .register-container {
+            max-width: 340px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 24px rgba(37,99,235,0.10);
+            padding: 32px 28px 24px 28px;
+        }
+        .register-container h2 {
+            color: #388e3c;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .register-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+        .register-container button {
+            width: 100%;
+            background: #388e3c;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        .register-container .error-msg {
+            color: #b71c1c;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .register-container .login-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: var(--brand-blue);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav style="max-width:340px;margin:24px auto 0 auto;display:flex;justify-content:space-between;gap:8px;">
+    <a href="index.html" style="color:var(--brand-blue);text-decoration:none;font-weight:500;">Home</a>
+    <a href="buy.html" style="color:var(--brand-blue);text-decoration:none;font-weight:500;">Buy</a>
+    <a href="rent.html" style="color:var(--brand-blue);text-decoration:none;font-weight:500;">Rent</a>
+    <a href="commercial.html" style="color:var(--brand-blue);text-decoration:none;font-weight:500;">Commercial</a>
+    <a href="post-property.html" style="color:var(--brand-blue);text-decoration:none;font-weight:500;">Post Property</a>
+    <a href="login.html" style="color:var(--brand-blue);text-decoration:none;font-weight:500;">Login</a>
+    </nav>
+    <div class="register-container">
+        <h2>Register</h2>
+        <form id="registerForm" autocomplete="off">
+            <input type="text" id="registerUsername" name="registerUsername" placeholder="Username" required>
+            <input type="tel" id="registerMobile" name="registerMobile" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" required aria-label="Mobile Number" autocomplete="tel">
+            <input type="password" id="registerPassword" name="registerPassword" placeholder="Password" required>
+            <div class="error-msg" id="registerMsg"></div>
+            <button type="submit">Register</button>
+        </form>
+        <a class="login-link" href="login.html">Already have an account? Login</a>
+    </div>
+    <script>
+    document.getElementById('registerForm').onsubmit = function(e) {
+        e.preventDefault();
+        const username = document.getElementById('registerUsername').value.trim();
+        const mobile = document.getElementById('registerMobile').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        if (!username || !/^[0-9]{10}$/.test(mobile) || !password) {
+            document.getElementById('registerMsg').textContent = 'Please fill all fields with valid info.';
+            return;
+        }
+        let users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (users[mobile]) {
+            document.getElementById('registerMsg').textContent = 'Mobile already registered.';
+            return;
+        }
+        users[mobile] = { username, password };
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', mobile);
+        document.getElementById('registerMsg').textContent = 'Registration successful! Redirecting...';
+        setTimeout(function() {
+            window.location.href = 'post-property.html';
+        }, 1200);
+    };
+    </script>
+</body>
+</html>
